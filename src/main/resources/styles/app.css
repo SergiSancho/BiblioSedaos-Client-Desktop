@@ -1,0 +1,13 @@
+.root {
+    -fx-font-family: "Calibri", "Candara", "Trebuchet MS", sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #EFEAF0;
+}
+
+.field-label {
+    -fx-font-size: 20px;
+    -fx-text-fill: #111;
+}
+
+
+
