@@ -11,9 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.version>5.10.0</junit.version>
-
-        <!-- AÑADE ESTO: fuerza Java 17 -->
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
@@ -60,11 +59,40 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>17.0.6</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>4.12.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
@@ -79,6 +107,24 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version> <!-- Versión estable más reciente -->
+                <configuration>
+                    <!-- Ejecutar tests en classpath para evitar problemas con módulos -->
+                    <useModulePath>false</useModulePath>
+                    <!-- Argumentos JVM para JavaFX en tests -->
+                    <argLine>
+                        --add-opens javafx.graphics/javafx.application=ALL-UNNAMED
+                        <!--  -add-opens javafx.base/java.lang=ALL-UNNAMED-->
+                        --add-opens javafx.fxml/javafx.fxml=ALL-UNNAMED
+                        <!--  -add-opens javafx.controls/javafx.scene.control=ALL-UNNAMED-->
+                    </argLine>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -100,6 +146,37 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <show>private</show>
+                    <!-- Evita que intente hacer un "aggregated report" -->
+
+                    <!-- Opcional: no fallar el build si hay warnings de javadoc -->
+                    <failOnError>false</failOnError>
+                </configuration>
+
+                <!-- (Opcional) dos ejecuciones si quieres enlazarlas al ciclo de vida -->
+                <executions>
+                    <execution>
+                        <id>site-javadoc</id>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <!-- no bind a un phase por defecto: lo puedes ejecutar manualmente -->
+                    </execution>
+                    <execution>
+                        <id>site-test-javadoc</id>
+                        <goals>
+                            <goal>test-javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
