@@ -16,7 +16,7 @@ L’aplicació es divideix en tres components:
 En aquesta part del projecte, es desenvoluparà el **client d’escriptori amb JavaFX**.
 
 ## Enllaços als altres components
-- [Servidor](https://github.com/david/Servidor-BiblioSedaos)  
+- [Servidor](https://github.com/dagaro22/biblioSedaosDavid)  
 - [Client mòbil](https://github.com/oscar/Mobile-BiblioSedaos)
 
 ## Requisits principals
