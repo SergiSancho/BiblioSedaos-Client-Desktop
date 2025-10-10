@@ -45,7 +45,7 @@
                                styleClass="field-label"
                                GridPane.rowIndex="0" GridPane.columnIndex="0"/>
                         <TextField fx:id="usernameField"
-                                   promptText="Introdueix el teu algo"
+                                   promptText="Introdueix el teu nom d'usuari"
                                    GridPane.rowIndex="0" GridPane.columnIndex="1"
                                    GridPane.hgrow="ALWAYS"/>
 
