@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.bibliosedaos.desktop"},{"l":"com.bibliosedaos.desktop.api"},{"l":"com.bibliosedaos.desktop.api.mock"},{"l":"com.bibliosedaos.desktop.controller"},{"l":"com.bibliosedaos.desktop.security"},{"l":"com.bibliosedaos.desktop.service"}];updateSearchResults();

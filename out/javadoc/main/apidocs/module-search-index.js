@@ -1,1 +1,0 @@
-moduleSearchIndex = [{"l":"com.bibliosedaos.bibliodesktop"}];updateSearchResults();
