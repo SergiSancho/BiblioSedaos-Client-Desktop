@@ -7,10 +7,11 @@ import com.bibliosedaos.desktop.model.dto.LoginResponse;
 import com.bibliosedaos.desktop.security.SessionStore;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Servei d'autenticació.
- *
  * Capa intermèdia entre els controladors i l'API d'autenticació.
  * Gestiona el procés de login/logout i l'emmagatzematge de la sessió.
  *
@@ -23,6 +24,7 @@ import java.util.Objects;
  */
 public class AuthService {
 
+    private static final Logger LOGGER = Logger.getLogger(AuthService.class.getName());
     /** Instància de AuthApi (injectada via constructor). */
     private final AuthApi authApi;
 
@@ -38,7 +40,6 @@ public class AuthService {
 
     /**
      * Autentica un usuari amb les credencials proporcionades.
-     *
      * En cas d'èxit, emmagatzema el token i les dades de l'usuari a la sessió.
      * Aquest mètode és bloquejant i s'ha d'executar en un fil de fons.
      *
@@ -66,11 +67,20 @@ public class AuthService {
 
     /**
      * Tanca la sessió de l'usuari actual.
-     *
      * Neteja totes les dades de sessió emmagatzemades en memòria.
-     * En un futur es podria ampliar per notificar el logout al servidor.
+     * Petició de logout al servidor (posarà token a blacklist)
      */
     public void logout() {
+        String token = SessionStore.getInstance().getToken();
+
         SessionStore.getInstance().clear();
+
+        try {
+            authApi.logout(token);
+        } catch (ApiException e) {
+            LOGGER.log(Level.INFO, "Error al revocar token en servidor: {0}", e.getMessage());
+        } catch (Exception e) {
+            LOGGER.log(Level.INFO, "Excepció inesperada al fer logout: {0}", e.getMessage());
+        }
     }
 }

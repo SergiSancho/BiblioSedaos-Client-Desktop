@@ -68,4 +68,87 @@ class AuthServiceIntegrationAgainstLocalServerTest {
         assertEquals(resposta.getUserId(), SessionStore.getInstance().getUserId(),
                 "L'ID d'usuari ha d'haver estat emmagatzemat a la sessió");
     }
+
+    /**
+     * Prova d'integració que verifica el logout contra el servidor real.
+     *
+     * Aquest test valida que es pot fer logout correctament després del login,
+     * netejant la sessió local i notificant al servidor.
+     */
+    @Test
+    void logout_DespresDeLogin_NetrejaSessioLocal() throws ApiException {
+        String usuari = "admin";
+        String contrasenya = "admin";
+
+        LoginResponse resposta = authService.login(usuari, contrasenya);
+        String tokenOriginal = resposta.getAccessToken();
+
+        assertNotNull(tokenOriginal, "Ha d'haver-hi un token després del login");
+        assertNotNull(SessionStore.getInstance().getToken(),
+                "El token ha d'estar emmagatzemat a la sessió");
+
+        authService.logout();
+
+        assertNull(SessionStore.getInstance().getToken(),
+                "El token ha d'haver estat eliminat de la sessió local");
+        assertNull(SessionStore.getInstance().getUserId(),
+                "L'ID d'usuari ha d'haver estat eliminat de la sessió local");
+    }
+
+    /**
+     * Prova d'integració que verifica que el logout funciona sense sessió prèvia.
+     *
+     * Aquest test valida que el logout no falla quan no hi ha sessió activa.
+     */
+    @Test
+    void logout_SenseSessioPrevia_NoLlancaExcepcio() {
+        SessionStore.getInstance().clear();
+
+        assertDoesNotThrow(() -> authService.logout(),
+                "El logout sense sessió no ha de llançar excepcions");
+    }
+
+    /**
+     * Prova d'integració que verifica el cicle complet login-logout-login.
+     *
+     * Aquest test valida que es pot fer login després d'un logout sense problemes.
+     */
+    @Test
+    void login_DespresDeLogout_FuncionaCorrectament() throws ApiException {
+        LoginResponse resposta1 = authService.login("admin", "admin");
+        String token1 = resposta1.getAccessToken();
+        assertNotNull(token1, "Primer token ha d'existir");
+
+        authService.logout();
+        assertNull(SessionStore.getInstance().getToken(),
+                "Sessió ha d'estar neta després del logout");
+
+        LoginResponse resposta2 = authService.login("admin", "admin");
+        String token2 = resposta2.getAccessToken();
+        assertNotNull(token2, "Segon token ha d'existir");
+
+        assertEquals(token2, SessionStore.getInstance().getToken(),
+                "El nou token ha d'estar emmagatzemat a la sessió");
+    }
+
+    /**
+     * Prova d'integració que verifica múltiples logouts consecutius.
+     *
+     * Aquest test valida que múltiples crides a logout no causen errors.
+     */
+    @Test
+    void logout_MultiplesCrides_NoCausenErrors() throws ApiException {
+        authService.login("admin", "admin");
+        assertNotNull(SessionStore.getInstance().getToken(),
+                "Ha d'haver-hi sessió després del login");
+
+        assertDoesNotThrow(() -> {
+            authService.logout(); // Primer logout
+            authService.logout(); // Segon logout (sessió ja neta)
+            authService.logout(); // Tercer logout (sessió ja neta)
+        }, "Múltiples logouts no han de llançar excepcions");
+
+        assertNull(SessionStore.getInstance().getToken(),
+                "La sessió ha d'estar neta després de múltiples logouts");
+    }
 }

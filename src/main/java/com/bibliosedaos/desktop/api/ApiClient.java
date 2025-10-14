@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.util.concurrent.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Client compartit per a comunicacions HTTP amb l'API REST.
@@ -21,6 +23,8 @@ import java.util.concurrent.*;
  * @since 2025
  */
 public class ApiClient {
+
+    private static final Logger LOGGER = Logger.getLogger(ApiClient.class.getName());
 
     /**
      * Retorna la URL base de la API (configurable mitjançant la propietat del sistema).
@@ -48,23 +52,36 @@ public class ApiClient {
     }
 
     /**
-     * Crea l'ExecutorService configurat per a tasques en segon pla.
-     *
-     * Utilitza fils dimoni que no impedeixen la sortida de l'aplicació
-     * i un nombre de fils basat en els processadors disponibles.
+     * Crea un ExecutorService configurat per a execució en segon pla.
+     * Pool de 2-50 fils, cua de 200 tasques, política CallerRunsPolicy
+     * i fils d'usuari persistents amb noms "biblio-bg-<id>".
      *
      * @return ExecutorService configurat
      */
     private static ExecutorService createExecutor() {
-        int threads = Math.max(2, Runtime.getRuntime().availableProcessors());
+        int core = Math.max(2, Runtime.getRuntime().availableProcessors());
+        int max = Math.max(core, 50); // límite razonable para picos
+        long keepAlive = 60L;
+
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(200); // cola acotada
         ThreadFactory tf = r -> {
             Thread t = new Thread(r);
-            t.setDaemon(true);
             t.setName("biblio-bg-" + t.getId());
             return t;
         };
-        return Executors.newFixedThreadPool(threads, tf);
+
+        ThreadPoolExecutor exec = new ThreadPoolExecutor(
+                core,
+                max,
+                keepAlive, TimeUnit.SECONDS,
+                queue,
+                tf,
+                new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+        exec.allowCoreThreadTimeOut(false);
+        return exec;
     }
+
 
     /**
      * Afegeix la capçalera d'autorització amb el token JWT si està disponible.
@@ -118,20 +135,46 @@ public class ApiClient {
     }
 
     /**
-     * Tanca l'executor de forma ordenada quan es tanca l'aplicació.
+     * Tanca l'executor de forma ordenada durant la finalització de l'aplicació.
      *
-     * Permet als fils en curs completar-se abans de la finalització
-     * i força la sortida si supera el temps límit.
+     * Permet als fils existents completar-se (fins a 10 segons) abans de forçar
+     * el tancament. Registra advertiments si l'executor resisteix la finalització.
      */
     public static void shutdownExecutor() {
         BG_EXEC.shutdown();
         try {
-            if (!BG_EXEC.awaitTermination(3, TimeUnit.SECONDS)) {
+            if (!BG_EXEC.awaitTermination(10, TimeUnit.SECONDS)) {
                 BG_EXEC.shutdownNow();
+                if (!BG_EXEC.awaitTermination(5, TimeUnit.SECONDS)) {
+                    LOGGER.warning("L'executor BG_EXEC no ha finalitzat després de la parada forçada.");
+                }
             }
         } catch (InterruptedException e) {
             BG_EXEC.shutdownNow();
             Thread.currentThread().interrupt();
+            LOGGER.log(Level.WARNING, "El fil que estava esperant la finalització de BG_EXEC ha estat interromput.", e);
         }
+    }
+    /**
+     * Extrau un missatge legible des del cos de la resposta d'error del servidor.
+     * Aquest mètode intenta primer analitzar la resposta com a JSON amb un camp "message".
+     * Si falla l'anàlisi JSON o el camp message és buit, retorna el text pla netejat.
+     *
+     * @param body Cos de la resposta HTTP d'error
+     * @param fallback Missatge per defecte a retornar si el cos és buit o null
+     * @return Missatge d'error netejat i truncat si és necessari
+     */
+    public static String extractErrorMessage(String body, String fallback) {
+        if (body == null || body.isBlank()) return fallback;
+        try {
+            ErrorResponse err = MAPPER.readValue(body, ErrorResponse.class);
+            if (err != null && err.getMessage() != null && !err.getMessage().isBlank()) {
+                return err.getMessage();
+            }
+        } catch (Exception ignored) {
+            // no es JSON de la forma { "message": ... } -> usar texto plano
+        }
+        String txt = body.replaceAll("\\s+", " ").trim();
+        return txt.length() <= 300 ? txt : txt.substring(0, 300) + "...";
     }
 }

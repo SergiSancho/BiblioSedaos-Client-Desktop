@@ -10,13 +10,14 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Controlador principal del dashboard de l'aplicació.
- *
  * Gestiona la navegació entre diferents vistes dins d'un panell central dinàmic,
  * la configuració basada en el rol de l'usuari i les operacions de sessió.
  *
@@ -67,6 +68,7 @@ public class DashboardController {
         initializeButtonEffects();
         setupNavigation();
         setupBySessionStore();
+        setupWindowCloseHandler();
     }
 
     /**
@@ -165,7 +167,6 @@ public class DashboardController {
 
     /**
      * Construeix el nom complet per mostrar.
-     * Package-private per a testabilitat.
      *
      * @param store SessionStore amb les dades de l'usuari
      * @return nom complet formatat
@@ -187,10 +188,10 @@ public class DashboardController {
     }
 
     /**
-     * Retorna una cadena neteja de valors null.
+     * Retorna una cadena neta de valors null.
      *
      * @param s cadena a netejar
-     * @return cadena neteja o cadena buida
+     * @return cadena neta o cadena buida
      */
     private String safeTrim(String s) {
         return s == null ? "" : s.trim();
@@ -238,23 +239,25 @@ public class DashboardController {
         }
     }
 
-    /* ---------- logout/navigation split per testabilitat ---------- */
-
     /**
-     * Executa el tancament de sessió.
-     * Package-private per a testabilitat.
+     * Executa el tancament de sessió
      */
     void performLogout() {
         try {
             authService.logout();
         } catch (Exception e) {
-            LOGGER.log(Level.INFO, "Error al logout (es continua amb navegació): {0}", e.getMessage());
+            LOGGER.log(Level.INFO, "Error durante logout: {0}", e.getMessage());
+        } finally {
+            try {
+                Platform.runLater(this::navigateToLoginAfterLogout);
+            } catch (IllegalStateException e) {
+                navigateToLoginAfterLogout();
+            }
         }
     }
 
     /**
      * Navega a la vista de login després del tancament de sessió.
-     * Package-private per a testabilitat.
      */
     void navigateToLoginAfterLogout() {
         try {
@@ -271,10 +274,24 @@ public class DashboardController {
     @FXML
     private void onLogout() {
         performLogout();
-        Platform.runLater(this::navigateToLoginAfterLogout);
     }
 
-    // ------------------ altres handlers de navegació ------------------
+    /**
+     * Configura el tancament de finestra per a que realitzi un logout complet i navegi a login
+     */
+    private void setupWindowCloseHandler() {
+        Platform.runLater(() -> {
+            try {
+                Stage stage = (Stage) logoutButton.getScene().getWindow();
+                stage.setOnCloseRequest(event -> {
+                    event.consume();
+                    performLogout();
+                });
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "No ha pogut configurar tancament de finestra: {0}", e.getMessage());
+            }
+        });
+    }
 
     /**
      * Navega a una vista específica al panell central.

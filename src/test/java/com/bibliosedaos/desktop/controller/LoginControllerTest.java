@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Proves unitàries per a LoginController.
  *
- * Verifica la lògica de negoci i validació sense dependre de JavaFX UI.
+ * Verifica la lògica de negoci i validació
  * S'utilitzen mocks per aïllar el comportament del controlador.
  *
  * @author Sergio

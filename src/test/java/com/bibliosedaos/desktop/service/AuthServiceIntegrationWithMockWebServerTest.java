@@ -50,7 +50,6 @@ class AuthServiceIntegrationWithMockWebServerTest {
      */
     @AfterEach
     void tearDown() throws Exception {
-        // Alliberar recursos i netejar estat global
         System.clearProperty("api.base.url");
         SessionStore.getInstance().clear();
 

@@ -1,0 +1,8 @@
+com.bibliosedaos.desktop.api
+com.bibliosedaos.desktop.controller
+com.bibliosedaos.desktop
+com.bibliosedaos.desktop.model.dto
+com.bibliosedaos.desktop.security
+com.bibliosedaos.desktop.service
+com.bibliosedaos.desktop.ui.navigator
+com.bibliosedaos.desktop.ui.util

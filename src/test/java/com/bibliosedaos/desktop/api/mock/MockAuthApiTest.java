@@ -137,13 +137,19 @@ class MockAuthApiTest {
 
     /**
      * Prova que el logout s'executa sense errors.
-     * Verifica que el mètode és idempotent i no llença excepcions.
+     * Verifica la variant logout(String) amb diferents inputs (null, token).
+     * També comprova idempotència (cridar diverses vegades no llença).
      */
     @Test
     void logout_QuanCridat_NoLlencaExcepcions() {
-        assertDoesNotThrow(() -> authApi.logout());
+        assertDoesNotThrow(() -> authApi.logout((String) null));
 
-        assertDoesNotThrow(() -> authApi.logout());
-        assertDoesNotThrow(() -> authApi.logout());
+        assertDoesNotThrow(() -> authApi.logout("MOCK-TOKEN-XYZ"));
+
+        assertDoesNotThrow(() -> {
+            authApi.logout(null);
+            authApi.logout("MOCK-TOKEN-XYZ");
+            authApi.logout("MOCK-TOKEN-XYZ");
+        });
     }
 }

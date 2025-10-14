@@ -1,0 +1,28 @@
+--class-path
+'C:/Users/PC/.m2/repository/org/openjfx/javafx-controls/17.0.6/javafx-controls-17.0.6.jar;C:/Users/PC/.m2/repository/org/openjfx/javafx-graphics/17.0.6/javafx-graphics-17.0.6.jar;C:/Users/PC/.m2/repository/org/openjfx/javafx-base/17.0.6/javafx-base-17.0.6.jar;C:/Users/PC/.m2/repository/org/openjfx/javafx-fxml/17.0.6/javafx-fxml-17.0.6.jar'
+--module-path
+'C:/Users/PC/.m2/repository/org/openjfx/javafx-fxml/17.0.6/javafx-fxml-17.0.6-win.jar;C:/Users/PC/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.2/jackson-core-2.15.2.jar;C:/Users/PC/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.2/jackson-annotations-2.15.2.jar;C:/Users/PC/.m2/repository/net/synedra/validatorfx/0.4.0/validatorfx-0.4.0.jar;C:/Users/PC/.m2/repository/org/openjfx/javafx-graphics/17.0.6/javafx-graphics-17.0.6-win.jar;C:/Users/PC/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2.jar;C:/Users/PC/.m2/repository/org/openjfx/javafx-base/17.0.6/javafx-base-17.0.6-win.jar;C:/Users/PC/IdeaProjects/BS-Escriptori/target/classes;C:/Users/PC/.m2/repository/org/controlsfx/controlsfx/11.1.2/controlsfx-11.1.2.jar;C:/Users/PC/.m2/repository/org/openjfx/javafx-controls/17.0.6/javafx-controls-17.0.6-win.jar'
+--patch-module
+com.bibliosedaos.bibliodesktop='C:/Users/PC/IdeaProjects/BS-Escriptori/src/main/java'
+-encoding
+'UTF-8'
+-private
+--release
+17
+--module-source-path
+'C:/Users/PC/IdeaProjects/BS-Escriptori/target/site/apidocs/src'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/PC/IdeaProjects/BS-Escriptori/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'BS-Escriptori 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'BS-Escriptori 1.0-SNAPSHOT API'

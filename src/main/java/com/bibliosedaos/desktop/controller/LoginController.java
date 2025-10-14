@@ -114,7 +114,7 @@ public class LoginController {
         task.setOnFailed(evt -> {
             Throwable ex = task.getException();
             showError(ex instanceof ApiException ? ex.getMessage() : "Error al connectar: " + (ex == null ? "desconegut" : ex.getMessage()));
-            LOGGER.log(Level.WARNING, "Login fallit", ex);
+            LOGGER.log(Level.WARNING, "Login fallit: {0}", new Object[] { ex == null ? "desconegut" : ex.getMessage() });
             restoreUiState();
             currentTask = null;
         });

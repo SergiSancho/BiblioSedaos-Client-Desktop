@@ -9,6 +9,7 @@ import com.bibliosedaos.desktop.model.dto.LoginResponse;
  * No fa crides HTTP; útil per desenvolupar la UI mentre el servidor no existeix.
  *
  * Actualment admet els usuaris "admin/admin" i "user/user".
+ *
  * @author Sergio
  * @version 1.0-SNAPSHOT
  * @since 2025
@@ -55,13 +56,14 @@ public class MockAuthApi implements AuthApi {
     }
 
     /**
-     * Simula el logout.
-     * Com és un mock, no fa cap acció real.
+     * Simula el logout (forma que pertany a la interfície AuthApi).
+     * Com és un mock, no fa cap acció real; accepta el token però l'ignora.
      *
-     * @throws ApiException mai; només per compatibilitat d'interfície
+     * @param token pot ser null en el mock
+     * @throws ApiException mai; present per compatibilitat d'interfície
      */
     @Override
-    public void logout() throws ApiException {
-
+    public void logout(String token) throws ApiException {
+        // No-op en el mock. Acceptem token però no fem res.
     }
 }

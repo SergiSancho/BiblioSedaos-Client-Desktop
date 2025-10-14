@@ -35,5 +35,5 @@ public interface AuthApi {
      *
      * @throws ApiException si hi ha errors en el procés de tancament
      */
-    void logout() throws ApiException;
+    void logout(String token) throws ApiException;
 }
