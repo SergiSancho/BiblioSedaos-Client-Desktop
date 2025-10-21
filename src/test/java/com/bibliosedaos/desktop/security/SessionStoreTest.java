@@ -84,7 +84,7 @@ class SessionStoreTest {
 
         assertNull(sessionStore.getToken(), "Token ha de ser null després de clear()");
         assertNull(sessionStore.getUserId(), "UserId ha de ser null després de clear()");
-        assertEquals(0, sessionStore.getRol(), "Rol ha de ser 0 després de clear()");
+        assertEquals(1, sessionStore.getRol(), "Rol ha de ser 1 després de clear()");
         assertNull(sessionStore.getNom(), "Nom ha de ser null després de clear()");
         assertNull(sessionStore.getCognom1(), "Cognom1 ha de ser null després de clear()");
         assertNull(sessionStore.getCognom2(), "Cognom2 ha de ser null després de clear()");

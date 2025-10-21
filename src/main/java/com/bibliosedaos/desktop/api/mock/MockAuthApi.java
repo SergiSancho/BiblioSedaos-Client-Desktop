@@ -33,7 +33,7 @@ public class MockAuthApi implements AuthApi {
             LoginResponse r = new LoginResponse();
             r.setAccessToken("MOCK-TOKEN-ADMIN-123456");
             r.setUserId("1");
-            r.setRol(0);
+            r.setRol(2);
             r.setNom("Sergio");
             r.setCognom1("Sancho");
             r.setCognom2("Mock");

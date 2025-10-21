@@ -46,7 +46,7 @@ class MockAuthApiTest {
         assertNotNull(resposta, "La resposta no ha de ser null");
         assertEquals("MOCK-TOKEN-ADMIN-123456", resposta.getAccessToken(), "Token ha de coincidir");
         assertEquals("1", resposta.getUserId(), "UserId ha de ser '1' per admin");
-        assertEquals(0, resposta.getRol(), "Rol ha de ser 0 (admin)");
+        assertEquals(2, resposta.getRol(), "Rol ha de ser 2 (admin)");
         assertEquals("Sergio", resposta.getNom(), "Nom ha de coincidir");
         assertEquals("Sancho", resposta.getCognom1(), "Primer cognom ha de coincidir");
         assertEquals("Mock", resposta.getCognom2(), "Segon cognom ha de coincidir");

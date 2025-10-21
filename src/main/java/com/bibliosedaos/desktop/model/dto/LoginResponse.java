@@ -21,7 +21,7 @@ public class LoginResponse {
     @JsonProperty("id")
     private String userId;
 
-    private int rol; // 0 admin, 1 normal
+    private int rol; // 2 admin, 1 normal
     private String nom;
     private String cognom1;
     private String cognom2;
@@ -45,10 +45,10 @@ public class LoginResponse {
     /** @param userId identificador únic de l'usuari */
     public void setUserId(String userId) { this.userId = userId; }
 
-    /** @return rol de l'usuari (0=admin, 1=normal) */
+    /** @return rol de l'usuari (2=admin, 1=normal) */
     public int getRol() { return rol; }
 
-    /** @param rol rol de l'usuari (0=admin, 1=normal) */
+    /** @param rol rol de l'usuari (2=admin, 1=normal) */
     public void setRol(int rol) { this.rol = rol; }
 
     /** @return nom de l'usuari */

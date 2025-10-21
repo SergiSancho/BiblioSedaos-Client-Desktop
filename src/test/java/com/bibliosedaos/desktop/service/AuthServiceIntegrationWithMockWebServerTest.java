@@ -149,7 +149,7 @@ class AuthServiceIntegrationWithMockWebServerTest {
             {
                 "token": "test-token-123",
                 "id": "1",
-                "rol": 0,
+                "rol": 2,
                 "nom": "Debug",
                 "cognom1": "Test",
                 "cognom2": "User"

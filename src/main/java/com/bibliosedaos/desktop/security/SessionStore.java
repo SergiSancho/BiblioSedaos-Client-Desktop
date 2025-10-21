@@ -67,7 +67,7 @@ public class SessionStore {
     /**
      * Estableix el rol de l'usuari.
      *
-     * @param rol Rol de l'usuari (0=admin, 1=usuari, etc.)
+     * @param rol Rol de l'usuari (2=admin, 1=usuari)
      */
     public synchronized void setRol(int rol) { this.rol = rol; }
 
@@ -127,7 +127,7 @@ public class SessionStore {
     public synchronized void clear() {
         token = null;
         userId = null;
-        rol = 0;
+        rol = 1;
         nom = null;
         cognom1 = null;
         cognom2 = null;

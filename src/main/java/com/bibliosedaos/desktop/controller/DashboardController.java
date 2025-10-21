@@ -145,10 +145,10 @@ public class DashboardController {
     /**
      * Configura la interfície segons el rol de l'usuari.
      *
-     * @param rol Rol de l'usuari (0 = admin)
+     * @param rol Rol de l'usuari (2 = admin)
      */
     private void configureRoleBasedUI(int rol) {
-        boolean isAdmin = (rol == 0);
+        boolean isAdmin = (rol == 2);
         showAdmin(isAdmin);
     }
 
