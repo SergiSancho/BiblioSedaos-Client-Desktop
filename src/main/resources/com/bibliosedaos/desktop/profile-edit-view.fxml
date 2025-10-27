@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.bibliosedaos.desktop.controller.ProfileEditController"
+            prefWidth="820" prefHeight="700"
+            id="profileRoot"
+            styleClass="root">
+
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER">
+            <VBox styleClass="edit-vbox" spacing="20" alignment="TOP_CENTER" prefWidth="760">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+
+                <HBox alignment="CENTER" spacing="10">
+                    <SVGPath styleClass="profile-icon"
+                             content="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm7.753 18.305c-.261-.586-.789-.991-1.871-1.241-2.293-.529-4.428-.993-3.393-2.945 3.145-5.942.833-9.119-2.489-9.119-3.388 0-5.644 3.299-2.489 9.119 1.066 1.964-1.148 2.427-3.393 2.945-1.084.25-1.608.658-1.867 1.246-1.405-1.723-2.251-3.919-2.251-6.31 0-5.514 4.486-10 10-10s10 4.486 10 10c0 2.389-.845 4.583-2.247 6.305z"/>
+                    <Label text="Editar Perfil" styleClass="title-label"/>
+                </HBox>
+
+                <GridPane hgap="16" vgap="16" alignment="CENTER" maxWidth="720" styleClass="form-grid">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="35" halignment="RIGHT"/>
+                        <ColumnConstraints percentWidth="65" hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label text="Dades d'Identificació" styleClass="section-label"
+                           GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                    <Label text="ID" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label fx:id="userIdLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Nick *" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="nickField" promptText="Nom d'usuari (màx. 10)" GridPane.rowIndex="2"
+                               GridPane.columnIndex="1"/>
+
+                    <Label text="NIF *" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <TextField fx:id="nifField" promptText="00000000A" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                    <Label text="Rol" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <Label fx:id="rolLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                    <Label text="Dades Personals" styleClass="section-label"
+                           GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                    <Label text="Nom *" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                    <TextField fx:id="nomField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+                    <Label text="Primer Cognom *" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                    <TextField fx:id="cognom1Field" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+                    <Label text="Segon Cognom" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                    <TextField fx:id="cognom2Field" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+
+                    <Label text="Contacte" styleClass="section-label"
+                           GridPane.rowIndex="9" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                    <Label text="Email *" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+                    <TextField fx:id="emailField" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+
+                    <Label text="Telèfon *" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+                    <TextField fx:id="tlfField" GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+
+                    <Label text="Adreça" styleClass="section-label"
+                           GridPane.rowIndex="12" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                    <Label text="Carrer *" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+                    <TextField fx:id="carrerField" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
+
+                    <Label text="Localitat *" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
+                    <TextField fx:id="localitatField" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
+
+                    <Label text="Província *" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
+                    <TextField fx:id="provinciaField" GridPane.rowIndex="15" GridPane.columnIndex="1"/>
+
+                    <Label text="Codi Postal *" GridPane.rowIndex="16" GridPane.columnIndex="0"/>
+                    <TextField fx:id="cpField" GridPane.rowIndex="16" GridPane.columnIndex="1"/>
+
+                    <Label text="Seguretat" styleClass="section-label"
+                           GridPane.rowIndex="17" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                    <Label text="Contrasenya *" GridPane.rowIndex="18" GridPane.columnIndex="0"/>
+                    <PasswordField fx:id="passwordField" promptText="Nova contrasenya" GridPane.rowIndex="18"
+                                   GridPane.columnIndex="1"/>
+
+                    <Label text="Confirma contrasenya *" GridPane.rowIndex="19" GridPane.columnIndex="0"/>
+                    <PasswordField fx:id="passwordConfirmField" promptText="Torna a escriure la contrasenya"
+                                   GridPane.rowIndex="19" GridPane.columnIndex="1"/>
+
+                    <Label fx:id="errorLabel" styleClass="error-label" visible="false" wrapText="true"
+                           GridPane.rowIndex="20" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+                    <HBox spacing="20" alignment="CENTER" styleClass="buttons-container"
+                          GridPane.rowIndex="21" GridPane.columnIndex="0" GridPane.columnSpan="2">
+                        <Button fx:id="saveButton" text="Guardar" onAction="#onSave"
+                                styleClass="primary-btn" prefWidth="140"/>
+                        <Button fx:id="cancelButton" text="Cancel·lar" onAction="#onCancel"
+                                styleClass="secondary-btn" prefWidth="140"/>
+                    </HBox>
+                </GridPane>
+
+                <Label text="* Camps obligatoris" styleClass="required-note"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

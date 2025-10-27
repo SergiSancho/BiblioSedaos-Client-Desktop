@@ -32,7 +32,7 @@ public class MockAuthApi implements AuthApi {
         if ("admin".equals(nick) && "admin".equals(pwd)) {
             LoginResponse r = new LoginResponse();
             r.setAccessToken("MOCK-TOKEN-ADMIN-123456");
-            r.setUserId("1");
+            r.setUserId(1L);
             r.setRol(2);
             r.setNom("Sergio");
             r.setCognom1("Sancho");
@@ -44,7 +44,7 @@ public class MockAuthApi implements AuthApi {
         if ("user".equals(nick) && "user".equals(pwd)) {
             LoginResponse r = new LoginResponse();
             r.setAccessToken("MOCK-TOKEN-USER-ABCDEF");
-            r.setUserId("2");
+            r.setUserId(2L);
             r.setRol(1);
             r.setNom("Antoni");
             r.setCognom1("Perez");

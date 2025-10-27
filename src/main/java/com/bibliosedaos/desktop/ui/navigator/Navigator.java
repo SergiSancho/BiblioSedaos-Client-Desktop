@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
@@ -15,12 +16,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Sistema centralitzat de navegació per a aplicacions JavaFX.
+ * Sistema centralitzat de navegacio per a aplicacions JavaFX.
  *
- * Gestiona la càrrega de vistes FXML, la injecció de dependències en controladors,
- * l'aplicació d'estils CSS i la navegació entre pantalles.
+ * Gestiona la carrega de vistes FXML, la injeccio de dependencies en controladors,
+ * l'aplicacio d'estils CSS i la navegacio entre pantalles.
  *
- * Assistència d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
+ * Assistencia d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
  * S'ha revisat i adaptat manualment per l'autor. Veure llegeixme.pdf per detalls.
  *
  * @author Sergio
@@ -38,41 +39,41 @@ public class Navigator {
     private final Set<String> appliedSceneCss = new LinkedHashSet<>();
     private Callback<Class<?>, Object> controllerFactory;
 
-    /** Constructor públic: crea una instància a MainApp. */
+    /** Constructor public: crea una instancia a MainApp. */
     public Navigator() {}
 
     /**
      * Inicialitza el Navigator amb l'Stage principal de JavaFX.
      *
-     * @param stage Stage principal de l'aplicació
+     * @param stage Stage principal de l'aplicacio
      */
     public void init(Stage stage) { this.primaryStage = stage; }
 
     /**
-     * Indica si el Navigator ja està inicialitzat.
+     * Indica si el Navigator ja esta inicialitzat.
      *
-     * @return true si està inicialitzat, false en cas contrari
+     * @return true si esta inicialitzat, false en cas contrari
      */
     public boolean isInitialized() { return this.primaryStage != null; }
 
     /**
      * Configura el factory per a controllers amb constructor injection.
      *
-     * @param factory Callback que crea instàncies de controladors
+     * @param factory Callback que crea instancies de controladors
      */
     public void setControllerFactory(Callback<Class<?>, Object> factory) { this.controllerFactory = factory; }
 
     /**
      * Verifica que el Navigator estigui inicialitzat.
      *
-     * @throws IllegalStateException si no està inicialitzat
+     * @throws IllegalStateException si no esta inicialitzat
      */
     private void ensureInit() {
         if (primaryStage == null) throw new IllegalStateException("Navigator no inicialitzat. Crida init(stage).");
     }
 
     /**
-     * Registra un CSS global que s'aplicarà a totes les vistes.
+     * Registra un CSS global que s'aplicara a totes les vistes.
      *
      * @param resourcePath Ruta al fitxer CSS al classpath
      */
@@ -81,10 +82,10 @@ public class Navigator {
     }
 
     /**
-     * Registra CSS específic per a una vista particular.
+     * Registra CSS especific per a una vista particular.
      *
      * @param fxmlPath Ruta al fitxer FXML de la vista
-     * @param cssResourcePath Ruta al fitxer CSS específic
+     * @param cssResourcePath Ruta al fitxer CSS especific
      */
     public void registerViewCss(String fxmlPath, String cssResourcePath) {
         if (fxmlPath == null || cssResourcePath == null) return;
@@ -92,14 +93,14 @@ public class Navigator {
     }
 
     /**
-     * Carrega una vista amb opcions avançades i configuració del controlador.
+     * Carrega una vista amb opcions avançades i configuracio del controlador.
      *
      * @param fxmlPath Ruta al fitxer FXML
-     * @param title Títol de la finestra
+     * @param title Titol de la finestra
      * @param width Amplada de la finestra
      * @param height Alçada de la finestra
      * @param maximize Si la finestra s'ha de maximitzar
-     * @param controllerSetup Consumer per configurar el controlador després de la càrrega
+     * @param controllerSetup Consumer per configurar el controlador despres de la carrega
      */
     public void goTo(String fxmlPath, String title, Double width, Double height, boolean maximize, Consumer<Object> controllerSetup) {
         ensureInit();
@@ -121,44 +122,57 @@ public class Navigator {
     }
 
     /**
-     * Assigna l'àrea de contingut principal per a vistes incrustades.
+     * Assigna l'area de contingut principal per a vistes incrustades.
      *
-     * @param centerStackPane StackPane que farà d'àrea de contingut principal
+     * @param centerStackPane StackPane que fara d'area de contingut principal
      */
     public void setMainContentArea(StackPane centerStackPane) { this.mainContentArea = centerStackPane; }
 
     /**
-     * Mostra una vista dins de l'àrea de contingut principal.
+     * Mostra una vista dins de l'area de contingut principal sense configuracio del controlador.
      *
      * @param fxmlPath Ruta al fitxer FXML de la vista
-     * @throws IllegalStateException si no s'ha assignat l'àrea principal
+     * @throws IllegalStateException si no s'ha assignat l'area principal
      */
     public void showMainView(String fxmlPath) {
-        if (mainContentArea == null) throw new IllegalStateException("Main content area no assignat.");
-        loadViewInContainer(fxmlPath, mainContentArea);
+        showMainView(fxmlPath, null);
     }
 
     /**
-     * Registra una àrea nested per a carregar vistes dins d'un container específic.
+     * Mostra una vista dins de l'area de contingut principal amb configuracio del controlador.
+     * La configuracio s'aplica ABANS que s'executi el metode initialize() del controlador.
      *
-     * @param name Nom identificador de l'àrea
-     * @param container StackPane que farà de container
+     * @param fxmlPath Ruta al fitxer FXML de la vista
+     * @param controllerConfig Consumer per configurar el controlador abans de initialize()
+     * @param <T> Tipus del controlador
+     * @throws IllegalStateException si no s'ha assignat l'area principal
+     */
+    public <T> void showMainView(String fxmlPath, Consumer<T> controllerConfig) {
+        if (mainContentArea == null) throw new IllegalStateException("Main content area no assignat.");
+        loadViewInContainer(fxmlPath, mainContentArea, controllerConfig);
+    }
+
+    /**
+     * Registra una area nested per a carregar vistes dins d'un container especific.
+     *
+     * @param name Nom identificador de l'area
+     * @param container StackPane que fara de container
      */
     public void registerNestedArea(String name, StackPane container) {
         if (name != null && container != null) nestedContentAreas.put(name, container);
     }
 
     /**
-     * Mostra una vista dins d'una àrea nested registrada.
+     * Mostra una vista dins d'una area nested registrada.
      *
-     * @param areaName Nom de l'àrea nested
+     * @param areaName Nom de l'area nested
      * @param fxmlPath Ruta al fitxer FXML de la vista
-     * @throws IllegalStateException si l'àrea no està registrada
+     * @throws IllegalStateException si l'area no esta registrada
      */
     public void showNestedView(String areaName, String fxmlPath) {
         StackPane container = nestedContentAreas.get(areaName);
         if (container == null) throw new IllegalStateException("Nested area no registrada: " + areaName);
-        loadViewInContainer(fxmlPath, container);
+        loadViewInContainer(fxmlPath, container, null);
     }
 
     /**
@@ -167,7 +181,7 @@ public class Navigator {
      * @param fxmlPath Ruta al fitxer FXML
      * @return Parent carregat des del FXML
      * @throws FxmlNotFoundException si el fitxer no es troba
-     * @throws FxmlLoadException si hi ha errors en la càrrega
+     * @throws FxmlLoadException si hi ha errors en la carrega
      */
     private Parent loadFxml(String fxmlPath) {
         URL url = getClass().getResource(fxmlPath);
@@ -175,7 +189,6 @@ public class Navigator {
         try {
             FXMLLoader loader = new FXMLLoader(url);
             if (controllerFactory != null) {
-                // lambda per evitar advertències d'estil
                 loader.setControllerFactory(c -> controllerFactory.call(c));
             }
             return loader.load();
@@ -185,9 +198,9 @@ public class Navigator {
     }
 
     /**
-     * Aplica la configuració al controlador si s'ha especificat.
+     * Aplica la configuracio al controlador si s'ha especificat.
      *
-     * @param root Parent que conté el controlador
+     * @param root Parent que conte el controlador
      * @param setup Consumer per configurar el controlador
      */
     private void applyControllerSetup(Parent root, Consumer<Object> setup) {
@@ -198,17 +211,70 @@ public class Navigator {
     }
 
     /**
-     * Carrega una vista dins d'un container específic.
+     * Carrega una vista dins d'un container especific sense configuracio del controlador.
      *
      * @param fxmlPath Ruta al fitxer FXML
      * @param container Container on carregar la vista
      */
     private void loadViewInContainer(String fxmlPath, StackPane container) {
-        Parent view = loadFxml(fxmlPath);
-        container.getChildren().setAll(view);
+        loadViewInContainer(fxmlPath, container, null);
+    }
 
-        Scene scene = primaryStage.getScene();
-        if (scene != null) applyCss(scene, viewCssMap.getOrDefault(fxmlPath, Collections.emptyList()));
+    /**
+     * Carrega una vista dins d'un container especific amb configuracio del controlador.
+     * La configuracio s'aplica ABANS que s'executi el metode initialize() del controlador.
+     *
+     * @param fxmlPath Ruta al fitxer FXML
+     * @param container Container on carregar la vista
+     * @param controllerConfig Consumer per configurar el controlador abans de initialize()
+     * @param <T> Tipus del controlador
+     */
+    private <T> void loadViewInContainer(String fxmlPath, StackPane container, Consumer<T> controllerConfig) {
+        URL url = getClass().getResource(fxmlPath);
+        if (url == null) throw new FxmlNotFoundException("FXML no trobat: " + fxmlPath);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(url);
+
+            // Interceptem la creacio del controlador per poder injectar-li dades abans de initialize()
+            loader.setControllerFactory(clazz -> {
+                Object controller;
+
+                // Utilitzar la controllerFactory existent si esta disponible
+                if (this.controllerFactory != null) {
+                    controller = this.controllerFactory.call(clazz);
+                } else {
+                    // Crear instancia per defecte
+                    try {
+                        controller = clazz.getDeclaredConstructor().newInstance();
+                    } catch (InstantiationException | IllegalAccessException |
+                             InvocationTargetException | NoSuchMethodException e) {
+                        throw new RuntimeException("No es va poder instanciar el controlador: " + clazz, e);
+                    }
+                }
+
+                // Aplicar configuracio previa a initialize() (amb cast segur)
+                if (controllerConfig != null) {
+                    try {
+                        @SuppressWarnings("unchecked")
+                        T typedController = (T) controller;
+                        controllerConfig.accept(typedController);
+                    } catch (ClassCastException e) {
+                        throw new RuntimeException("Type mismatch en controller: " + clazz, e);
+                    }
+                }
+                return controller;
+            });
+
+            Parent view = loader.load(); // initialize() s'executa DESPRES, amb les dades ja configurades
+            container.getChildren().setAll(view);
+
+            Scene scene = primaryStage.getScene();
+            if (scene != null) applyCss(scene, viewCssMap.getOrDefault(fxmlPath, Collections.emptyList()));
+
+        } catch (IOException e) {
+            throw new FxmlLoadException("Error carregant FXML: " + fxmlPath, e);
+        }
     }
 
     /**
@@ -238,7 +304,7 @@ public class Navigator {
     }
 
     /**
-     * Redimensiona l'stage segons els paràmetres especificats.
+     * Redimensiona l'stage segons els parametres especificats.
      *
      * @param width Amplada desitjada
      * @param height Alçada desitjada
@@ -254,7 +320,7 @@ public class Navigator {
     }
 
     /**
-     * Retorna una vista unmodifiable dels styles aplicats a l'última escena carregada.
+     * Retorna una vista unmodifiable dels styles aplicats a l'ultima escena carregada.
      *
      * @return Conjunt d'URLs CSS aplicades
      */
@@ -263,7 +329,7 @@ public class Navigator {
     }
 
     /**
-     * Excepció llançada quan no es troba un fitxer FXML.
+     * Excepcio llançada quan no es troba un fitxer FXML.
      */
     public static class FxmlNotFoundException extends RuntimeException {
         /**
@@ -275,14 +341,14 @@ public class Navigator {
     }
 
     /**
-     * Excepció llançada quan hi ha errors en carregar un fitxer FXML.
+     * Excepcio llançada quan hi ha errors en carregar un fitxer FXML.
      */
     public static class FxmlLoadException extends RuntimeException {
         /**
          * Constructor amb missatge i causa de l'error.
          *
          * @param message Missatge descriptiu de l'error
-         * @param cause Excepció original que va causar l'error
+         * @param cause Excepcio original que va causar l'error
          */
         public FxmlLoadException(String message, Throwable cause) { super(message, cause); }
     }

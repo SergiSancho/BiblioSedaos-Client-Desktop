@@ -24,6 +24,9 @@ class AuthServiceIntegrationAgainstLocalServerTest {
 
     private AuthService authService;
 
+    private static final String VALID_USER = "admin4";
+    private static final String VALID_PASSWORD = "admin4";
+
     /**
      * Configuració inicial abans de cada test.
      * Inicialitza els components necessaris per a la comunicació amb el servidor real.
@@ -54,10 +57,8 @@ class AuthServiceIntegrationAgainstLocalServerTest {
      */
     @Test
     void login_ContraServidorReal_AutenticacioCorrecta() throws ApiException {
-        String usuari = "admin";
-        String contrasenya = "admin";
 
-        LoginResponse resposta = authService.login(usuari, contrasenya);
+        LoginResponse resposta = authService.login(VALID_USER, VALID_PASSWORD);
 
         assertNotNull(resposta, "La resposta del servidor no ha de ser null");
         assertNotNull(resposta.getAccessToken(), "El token d'accés ha d'estar present");
@@ -77,10 +78,8 @@ class AuthServiceIntegrationAgainstLocalServerTest {
      */
     @Test
     void logout_DespresDeLogin_NetrejaSessioLocal() throws ApiException {
-        String usuari = "admin";
-        String contrasenya = "admin";
 
-        LoginResponse resposta = authService.login(usuari, contrasenya);
+        LoginResponse resposta = authService.login(VALID_USER, VALID_PASSWORD);
         String tokenOriginal = resposta.getAccessToken();
 
         assertNotNull(tokenOriginal, "Ha d'haver-hi un token després del login");
@@ -115,7 +114,7 @@ class AuthServiceIntegrationAgainstLocalServerTest {
      */
     @Test
     void login_DespresDeLogout_FuncionaCorrectament() throws ApiException {
-        LoginResponse resposta1 = authService.login("admin", "admin");
+        LoginResponse resposta1 = authService.login(VALID_USER, VALID_PASSWORD);
         String token1 = resposta1.getAccessToken();
         assertNotNull(token1, "Primer token ha d'existir");
 
@@ -123,7 +122,7 @@ class AuthServiceIntegrationAgainstLocalServerTest {
         assertNull(SessionStore.getInstance().getToken(),
                 "Sessió ha d'estar neta després del logout");
 
-        LoginResponse resposta2 = authService.login("admin", "admin");
+        LoginResponse resposta2 = authService.login(VALID_USER, VALID_PASSWORD);
         String token2 = resposta2.getAccessToken();
         assertNotNull(token2, "Segon token ha d'existir");
 
@@ -138,14 +137,14 @@ class AuthServiceIntegrationAgainstLocalServerTest {
      */
     @Test
     void logout_MultiplesCrides_NoCausenErrors() throws ApiException {
-        authService.login("admin", "admin");
+        authService.login(VALID_USER, VALID_PASSWORD);
         assertNotNull(SessionStore.getInstance().getToken(),
                 "Ha d'haver-hi sessió després del login");
 
         assertDoesNotThrow(() -> {
-            authService.logout(); // Primer logout
-            authService.logout(); // Segon logout (sessió ja neta)
-            authService.logout(); // Tercer logout (sessió ja neta)
+            authService.logout();
+            authService.logout();
+            authService.logout();
         }, "Múltiples logouts no han de llançar excepcions");
 
         assertNull(SessionStore.getInstance().getToken(),

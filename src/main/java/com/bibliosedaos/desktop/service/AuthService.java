@@ -55,7 +55,7 @@ public class AuthService {
         if (resp != null && resp.getAccessToken() != null && !resp.getAccessToken().isEmpty()) {
             SessionStore store = SessionStore.getInstance();
             store.setToken(resp.getAccessToken());
-            store.setUserId(resp.getUserId());
+            store.setUserId(resp.getUserId());  // SIMPLIFICADO: Ya es Long
             store.setRol(resp.getRol());
             store.setNom(resp.getNom());
             store.setCognom1(resp.getCognom1());

@@ -126,10 +126,9 @@
 }
 
 .main-content {
-    -fx-background-color: linear-gradient(#fbf8fc, #fffefe);
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 20;
+-fx-background-color: transparent;
+-fx-pref-width: 100%;
+-fx-pref-height: 100%;
 }
 
 .center-placeholder {

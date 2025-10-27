@@ -55,7 +55,7 @@ class AuthServiceIntegrationWithMockApiTest {
         LoginResponse resp = authService.login("admin", "admin");
 
         assertNotNull(resp);
-        assertEquals("1", resp.getUserId());
+        assertEquals(1L, resp.getUserId());
         assertNotNull(SessionStore.getInstance().getToken());
         assertTrue(SessionStore.getInstance().getToken().startsWith("MOCK-TOKEN-ADMIN"));
     }
@@ -71,7 +71,7 @@ class AuthServiceIntegrationWithMockApiTest {
         LoginResponse resp = authService.login("user", "user");
 
         assertNotNull(resp);
-        assertEquals("2", resp.getUserId());
+        assertEquals(2L, resp.getUserId());
         assertTrue(SessionStore.getInstance().getToken().startsWith("MOCK-TOKEN-USER"));
     }
 

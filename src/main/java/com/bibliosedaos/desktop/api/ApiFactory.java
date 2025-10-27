@@ -1,6 +1,7 @@
 package com.bibliosedaos.desktop.api;
 
 import com.bibliosedaos.desktop.api.http.HttpAuthApi;
+import com.bibliosedaos.desktop.api.http.HttpUserApi;
 import com.bibliosedaos.desktop.api.mock.MockAuthApi;
 
 /**
@@ -58,5 +59,17 @@ public final class ApiFactory {
         } else {
             return new HttpAuthApi();
         }
+    }
+
+    /**
+     * Crea una implementació d'UserApi segons la configuració actual.
+     *
+     * En mode mock no implementat
+     * en mode real retorna un client HTTP que es comunica amb el servidor.
+     *
+     * @return implementació configurada d'UserApi
+     */
+    public static UserApi createUserApi() {
+        return new HttpUserApi();
     }
 }

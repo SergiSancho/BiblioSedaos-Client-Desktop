@@ -1,0 +1,122 @@
+#profileRoot .edit-vbox {
+    -fx-background-color: linear-gradient(to bottom right, #f7f0fb 0%, #efeaf7 40%, #efeaf0 100%);
+}
+
+#profileRoot .profile-icon {
+    -fx-fill: #7b1fa2;
+    -fx-effect: dropshadow(gaussian, rgba(123,31,162,0.25), 8, 0, 0, 2);
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+#profileRoot .title-label {
+    -fx-font-size: 34px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #7b1fa2;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(123,31,162,0.25), 3, 0, 0, 1);
+}
+
+#profileRoot .form-grid {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(94,15,133,0.15), 12, 0, 0, 4);
+    -fx-border-color: rgba(94,15,133,0.1);
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+}
+
+#profileRoot .section-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #5e0f85;
+    -fx-padding: 12 16 12 16;
+    -fx-background-color: rgba(123,31,162,0.08);
+    -fx-border-color: rgba(94,15,133,0.2);
+    -fx-border-width: 0 0 2 0;
+    -fx-background-radius: 8;
+}
+
+#profileRoot .form-grid .label:not(.error-label):not(.success-label) {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+    -fx-font-weight: 600;
+}
+
+#profileRoot .form-grid .text-field,
+#profileRoot .form-grid .password-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: rgba(94,15,133,0.25);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12 14 12 14;
+    -fx-pref-height: 46;
+    -fx-font-size: 16px;
+}
+
+#profileRoot .form-grid .text-field:disabled {
+    -fx-background-color: #f8f8f8;
+    -fx-text-fill: #666;
+    -fx-opacity: 1.0;
+}
+
+#profileRoot .form-grid .text-field:invalid,
+#profileRoot .form-grid .password-field:invalid {
+    -fx-border-color: #d32f2f;
+    -fx-border-width: 2px;
+}
+
+#profileRoot .form-grid .text-field:valid,
+#profileRoot .form-grid .password-field:valid {
+    -fx-border-color: #388e3c;
+}
+
+/* Progress indicator */
+#profileRoot .progress-indicator {
+    -fx-progress-color: #5e0f85;
+}
+
+/* Contenedor de botones */
+#profileRoot .buttons-container {
+    -fx-padding: 25 0 0 0;
+}
+
+/* Botones */
+#profileRoot .primary-btn {
+    -fx-background-color: linear-gradient(#7b1fa2, #5e0f85);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-pref-height: 48;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+}
+
+#profileRoot .primary-btn:hover {
+    -fx-background-color: linear-gradient(#9c27b0, #7b1fa2);
+}
+
+#profileRoot .secondary-btn {
+    -fx-background-color: white;
+    -fx-border-color: #5e0f85;
+    -fx-border-width: 2;
+    -fx-text-fill: #5e0f85;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-pref-height: 48;
+    -fx-background-radius: 12;
+}
+
+#profileRoot .secondary-btn:hover {
+    -fx-background-color: #f8f4fb;
+}
+
+/* Nota de campos obligatorios */
+#profileRoot .required-note {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-font-style: italic;
+    -fx-padding: 10 0 0 0;
+}

@@ -17,11 +17,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Controlador principal del dashboard de l'aplicació.
- * Gestiona la navegació entre diferents vistes dins d'un panell central dinàmic,
- * la configuració basada en el rol de l'usuari i les operacions de sessió.
+ * Controlador principal del dashboard de l'aplicacio.
+ * Gestiona la navegacio entre diferents vistes dins d'un panell central dinamic,
+ * la configuracio basada en el rol de l'usuari i les operacions de sessio.
  *
- * Assistència d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
+ * Assistencia d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
  * S'ha revisat i adaptat manualment per l'autor. Veure llegeixme.pdf per detalls.
  *
  * @author Sergio
@@ -32,7 +32,6 @@ public class DashboardController {
 
     private static final Logger LOGGER = Logger.getLogger(DashboardController.class.getName());
 
-    // Elements FXML
     @FXML private Label userNameLabel;
     @FXML private Label userIdLabel;
     @FXML private Button editProfileButton;
@@ -48,11 +47,11 @@ public class DashboardController {
     private final Navigator navigator;
 
     /**
-     * Constructor amb injecció de dependències.
+     * Constructor amb injeccio de dependencies.
      *
-     * @param authService servei d'autenticació
-     * @param navigator gestor de navegació
-     * @throws NullPointerException si alguna dependència és null
+     * @param authService servei d'autenticacio
+     * @param navigator gestor de navegacio
+     * @throws NullPointerException si alguna dependència es null
      */
     public DashboardController(AuthService authService, Navigator navigator) {
         this.authService = Objects.requireNonNull(authService, "AuthService no pot ser null");
@@ -60,8 +59,8 @@ public class DashboardController {
     }
 
     /**
-     * Inicialitza el controlador després de carregar el FXML.
-     * Configura efectes visuals, navegació i dades de sessió.
+     * Inicialitza el controlador despres de carregar el FXML.
+     * Configura efectes visuals, navegacio i dades de sessio.
      */
     @FXML
     private void initialize() {
@@ -72,7 +71,7 @@ public class DashboardController {
     }
 
     /**
-     * Aplica efectes de click als botons de la interfície.
+     * Aplica efectes de click als botons de la interficie.
      */
     private void initializeButtonEffects() {
         safeApplyClick(editProfileButton);
@@ -138,8 +137,8 @@ public class DashboardController {
      */
     private void configureUserInfo(SessionStore store) {
         setDisplayName(buildDisplayName(store));
-        String uid = safeTrim(store.getUserId());
-        if (userIdLabel != null) userIdLabel.setText(uid.isEmpty() ? "" : "ID: " + uid);
+        Long uid = store.getUserId(); // CAMBIO: Ahora es Long
+        if (userIdLabel != null) userIdLabel.setText(uid == null ? "" : "ID: " + uid.toString());
     }
 
     /**
@@ -175,10 +174,10 @@ public class DashboardController {
         String nom = safeTrim(store.getNom());
         String cognom1 = safeTrim(store.getCognom1());
         String cognom2 = safeTrim(store.getCognom2());
-        String uid = safeTrim(store.getUserId());
+        Long uid = store.getUserId(); // CAMBIO: Ahora es Long
 
         if (nom.isEmpty()) {
-            return (uid.isEmpty() ? "Usuari/a desconegut" : uid);
+            return (uid == null ? "Usuari/a desconegut" : uid.toString());
         }
 
         StringBuilder sb = new StringBuilder(nom);
@@ -300,9 +299,13 @@ public class DashboardController {
      */
     private void navigateTo(String fxmlPath) {
         try {
+            LOGGER.log(Level.INFO, "Intentando navegar a: {0}", fxmlPath);
             navigator.showMainView(fxmlPath);
+            LOGGER.log(Level.INFO, "Navegación exitosa a: {0}", fxmlPath);
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error al navegar a {0}: {1}", new Object[]{fxmlPath, e.getMessage()});
+            LOGGER.log(Level.SEVERE, "ERROR CRÍTICO al navegar a {0}: {1}",
+                    new Object[]{fxmlPath, e.getMessage()});
+            e.printStackTrace(); // Para ver el stack trace completo
         }
     }
 

@@ -47,7 +47,7 @@ class SessionStoreTest {
     @Test
     void settersAndGetters_WhenValuesSet_ReturnsCorrectValues() {
         String expectedToken = "test-token-123";
-        String expectedUserId = "user-456";
+        Long expectedUserId = 456L;
         int expectedRol = 1;
         String expectedNom = "Test";
         String expectedCognom1 = "User";
@@ -75,7 +75,7 @@ class SessionStoreTest {
     @Test
     void clear_WhenCalled_ResetsAllFields() {
         sessionStore.setToken("some-token");
-        sessionStore.setUserId("some-user");
+        sessionStore.setUserId(456L);
         sessionStore.setRol(2);
         sessionStore.setNom("Some");
         sessionStore.setCognom1("Name");

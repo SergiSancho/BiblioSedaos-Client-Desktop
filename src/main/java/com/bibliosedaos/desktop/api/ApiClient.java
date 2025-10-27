@@ -66,6 +66,7 @@ public class ApiClient {
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(200); // cola acotada
         ThreadFactory tf = r -> {
             Thread t = new Thread(r);
+            t.setDaemon(true);
             t.setName("biblio-bg-" + t.getId());
             return t;
         };
@@ -76,7 +77,7 @@ public class ApiClient {
                 keepAlive, TimeUnit.SECONDS,
                 queue,
                 tf,
-                new ThreadPoolExecutor.CallerRunsPolicy()
+                new ThreadPoolExecutor.AbortPolicy()
         );
         exec.allowCoreThreadTimeOut(false);
         return exec;

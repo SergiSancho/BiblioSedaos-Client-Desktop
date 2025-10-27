@@ -19,7 +19,7 @@ public class LoginResponse {
     private String accessToken;
 
     @JsonProperty("id")
-    private String userId;
+    private Long userId;  // CAMBIO: String -> Long
 
     private int rol; // 2 admin, 1 normal
     private String nom;
@@ -40,10 +40,10 @@ public class LoginResponse {
     public void setAccessToken(String accessToken) { this.accessToken = accessToken; }
 
     /** @return identificador únic de l'usuari */
-    public String getUserId() { return userId; }
+    public Long getUserId() { return userId; }  // CAMBIO: String -> Long
 
     /** @param userId identificador únic de l'usuari */
-    public void setUserId(String userId) { this.userId = userId; }
+    public void setUserId(Long userId) { this.userId = userId; }  // CAMBIO: String -> Long
 
     /** @return rol de l'usuari (2=admin, 1=normal) */
     public int getRol() { return rol; }

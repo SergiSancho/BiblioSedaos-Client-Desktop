@@ -67,7 +67,7 @@ class AuthServiceIntegrationWithMockWebServerTest {
         String jsonRespostaExitosa = """
             {
                 "token": "TOKEN-JWT-REAL-12345",
-                "id": "99",
+                "id": 99,
                 "rol": 1,
                 "nom": "Usuari",
                 "cognom1": "Test",
@@ -85,12 +85,12 @@ class AuthServiceIntegrationWithMockWebServerTest {
         LoginResponse resposta = authService.login("usuari", "contrasenya");
 
         assertNotNull(resposta, "La resposta no ha de ser null");
-        assertEquals("99", resposta.getUserId(), "UserId ha de coincidir amb el JSON");
+        assertEquals(99L, resposta.getUserId(), "UserId ha de coincidir amb el JSON");
         assertEquals("TOKEN-JWT-REAL-12345", resposta.getAccessToken(), "Token ha de coincidir amb el JSON");
 
         assertEquals("TOKEN-JWT-REAL-12345", SessionStore.getInstance().getToken(),
                 "El token ha d'haver estat emmagatzemat a la sessió");
-        assertEquals("99", SessionStore.getInstance().getUserId(),
+        assertEquals(99L, SessionStore.getInstance().getUserId(),
                 "L'userId ha d'haver estat emmagatzemat a la sessió");
     }
 
@@ -148,7 +148,7 @@ class AuthServiceIntegrationWithMockWebServerTest {
         String jsonResposta = """
             {
                 "token": "test-token-123",
-                "id": "1",
+                "id": 1,
                 "rol": 2,
                 "nom": "Debug",
                 "cognom1": "Test",

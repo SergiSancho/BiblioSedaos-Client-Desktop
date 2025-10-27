@@ -3,9 +3,10 @@ package com.bibliosedaos.desktop;
 import com.bibliosedaos.desktop.api.ApiClient;
 import com.bibliosedaos.desktop.api.ApiFactory;
 import com.bibliosedaos.desktop.api.AuthApi;
-import com.bibliosedaos.desktop.controller.DashboardController;
-import com.bibliosedaos.desktop.controller.LoginController;
+import com.bibliosedaos.desktop.api.UserApi;
+import com.bibliosedaos.desktop.controller.*;
 import com.bibliosedaos.desktop.service.AuthService;
+import com.bibliosedaos.desktop.service.UserService;
 import com.bibliosedaos.desktop.ui.navigator.Navigator;
 import javafx.application.Application;
 import javafx.scene.image.Image;
@@ -39,6 +40,10 @@ public class MainApp extends Application {
     private static final String APP_TITLE = "BiblioSedaos - Login";
     private static final String LOGIN_VIEW = "/com/bibliosedaos/desktop/login-view.fxml";
     private static final String DASHBOARD_VIEW = "/com/bibliosedaos/desktop/dashboard-view.fxml";
+    private static final String WELCOME_VIEW = "/com/bibliosedaos/desktop/welcome-view.fxml";
+    private static final String PROFILE_EDIT_VIEW = "/com/bibliosedaos/desktop/profile-edit-view.fxml";
+    private static final String USERS_LIST_VIEW = "/com/bibliosedaos/desktop/users-list-view.fxml";
+    private static final String USER_FORM_VIEW = "/com/bibliosedaos/desktop/user-form-view.fxml";
     private static final boolean DEFAULT_USE_MOCK = true;
     private static final double DEFAULT_WIDTH = 1000.0;
     private static final double DEFAULT_HEIGHT = 600.0;
@@ -75,6 +80,10 @@ public class MainApp extends Application {
         nav.registerGlobalCss("/styles/app.css");
         nav.registerViewCss(LOGIN_VIEW, "/styles/login.css");
         nav.registerViewCss(DASHBOARD_VIEW, "/styles/dashboard.css");
+        nav.registerViewCss(WELCOME_VIEW, "/styles/welcome.css");
+        nav.registerViewCss(PROFILE_EDIT_VIEW, "/styles/profile-edit.css");
+        nav.registerViewCss(USERS_LIST_VIEW, "/styles/users-list.css");
+        nav.registerViewCss(USER_FORM_VIEW, "/styles/user-form.css");
 
         setupStage(stage);
 
@@ -82,11 +91,18 @@ public class MainApp extends Application {
         AuthApi authApi = ApiFactory.createAuthApi();
         AuthService authService = new AuthService(authApi);
 
+        UserApi userApi = ApiFactory.createUserApi();
+        UserService userService = new UserService(userApi);
+
         // ControllerFactory per a injecció de dependències en controladors
         nav.setControllerFactory(clazz -> {
             try {
                 if (clazz == LoginController.class) return new LoginController(authService, nav);
                 if (clazz == DashboardController.class) return new DashboardController(authService, nav);
+                if (clazz == ProfileEditController.class) return new ProfileEditController(userService, nav);
+                if (clazz == UsersListController.class) return new UsersListController(userService, nav);
+                if (clazz == UserFormController.class) return new UserFormController(userService, nav);
+
                 return clazz.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error creando controller {0}", clazz.getName());

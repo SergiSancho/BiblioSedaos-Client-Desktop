@@ -1,0 +1,47 @@
+.welcome-root {
+    -fx-font-family: "Calibri", "Candara", "Trebuchet MS", sans-serif;
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: linear-gradient(to bottom, #fbf8fc, #f4eef8);
+}
+
+.welcome-left-pane {
+    -fx-pref-width: 360px;
+    -fx-min-width: 260px;
+    -fx-max-width: 420px;
+
+    -fx-background-image: url("../com/bibliosedaos/desktop/images/welcome.png");
+    -fx-background-position: center_left;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-size: auto 100%;
+}
+
+.welcome-center-container {
+    -fx-alignment: CENTER;
+    -fx-padding: 24;
+}
+
+.welcome-card {
+    -fx-background-color: rgba(255,255,255,0.94);
+    -fx-background-radius: 16;
+    -fx-padding: 28 30 28 30;
+    -fx-effect: dropshadow( gaussian , rgba(106,27,154,0.12) , 18, 0, 0, 8 );
+    -fx-max-width: 320px;
+    -fx-max-width: 620px;
+}
+
+.welcome-title {
+    -fx-font-size: 48px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #7b1fa2;
+    -fx-padding: 0 0 6 0;
+    -fx-effect: dropshadow(gaussian, rgba(123,31,162,0.25), 3, 0, 0, 1);
+}
+
+.welcome-subtitle {
+    -fx-font-size: 18px;
+    -fx-text-fill: #3f2a44;
+    -fx-line-spacing: 12px;
+}

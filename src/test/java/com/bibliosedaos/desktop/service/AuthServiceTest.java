@@ -45,7 +45,7 @@ class AuthServiceTest {
     void login_AmbCredencialsValides_RetornaRespostaIEmmagatzemaSessio() throws ApiException {
         LoginResponse respostaMock = new LoginResponse();
         respostaMock.setAccessToken("token123");
-        respostaMock.setUserId("user1");
+        respostaMock.setUserId(1L);
         respostaMock.setRol(1);
         respostaMock.setNom("Usuari");
         respostaMock.setCognom1("Test");
@@ -57,7 +57,7 @@ class AuthServiceTest {
         assertNotNull(resultat);
         assertEquals("token123", resultat.getAccessToken());
         assertEquals("token123", SessionStore.getInstance().getToken());
-        assertEquals("user1", SessionStore.getInstance().getUserId());
+        assertEquals(1L, SessionStore.getInstance().getUserId());
     }
 
     /**
@@ -82,7 +82,7 @@ class AuthServiceTest {
     @Test
     void logout_QuanSessioActiva_NetejaTotesLesDades() {
         SessionStore.getInstance().setToken("token123");
-        SessionStore.getInstance().setUserId("user1");
+        SessionStore.getInstance().setUserId(1L);
         SessionStore.getInstance().setNom("Usuari");
 
         authService.logout();

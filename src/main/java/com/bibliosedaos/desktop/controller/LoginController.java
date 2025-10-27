@@ -102,7 +102,7 @@ public class LoginController {
             if (resp != null) {
                 passwordField.clear();
                 navigator.goTo("/com/bibliosedaos/desktop/dashboard-view.fxml",
-                        "BiblioSedaos - " + resp.getNom(), null, null, true, null);
+                        "BiblioSedaos - Dashboard", null, null, true, null);
                 LOGGER.log(Level.INFO, "Login ok: {0}", resp.getNom());
             } else {
                 showError("Resposta inesperada del servidor.");

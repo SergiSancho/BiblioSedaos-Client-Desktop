@@ -127,7 +127,7 @@ class DashboardControllerTest {
         s.setNom("Joan");
         s.setCognom1("Garcia");
         s.setCognom2("Lopez");
-        s.setUserId("42");
+        s.setUserId(42L);
 
         String name = controller.buildDisplayName(s);
 
@@ -143,7 +143,7 @@ class DashboardControllerTest {
         DashboardController controller = new DashboardController(authServiceMock, navigatorMock);
         SessionStore s = SessionStore.getInstance();
         s.setNom(null);
-        s.setUserId("42");
+        s.setUserId(42L);
 
         String name = controller.buildDisplayName(s);
 

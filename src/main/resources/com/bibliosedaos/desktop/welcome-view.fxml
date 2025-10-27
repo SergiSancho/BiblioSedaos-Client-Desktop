@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1"
-           alignment="CENTER"
-           style="-fx-background-color: white; -fx-padding: 20;">
-    <children>
-        <VBox alignment="CENTER" spacing="10">
-            <Label text="👋 Benvingut/da a BiblioSedaos!"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #7b1fa2"/>
-            <Label text="Amb aquesta aplicació, l'administrador pot gestionar llibres, usuaris i préstecs."
-                   style="-fx-font-size: 18px; -fx-text-fill: #555;"/>
-            <Label text="Els usuaris normals poden cercar llibres i consultar els seus préstecs."
-                   style="-fx-font-size: 18px; -fx-text-fill: #555;"/>
-        </VBox>
-    </children>
-</StackPane>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="1000" prefHeight="600"
+            styleClass="welcome-root">
+
+    <left>
+        <StackPane styleClass="welcome-left-pane" BorderPane.alignment="TOP_LEFT">
+        </StackPane>
+    </left>
+
+    <center>
+        <StackPane>
+            <VBox spacing="12" styleClass="welcome-center-container">
+                <VBox spacing="12" styleClass="welcome-card">
+                    <Label text="Benvinguda!" styleClass="welcome-title" />
+                    <Label wrapText="true"
+                           maxWidth="720"
+                           styleClass="welcome-subtitle"
+                           text="Aquesta és la aplicació escriptori de Biblio Sedaos.&#10;A la barra lateral de l'esquerra:&#10;• L'administrador/a pot gestionar llibres, usuaris i préstecs.&#10;• Les usuàries normals poden cercar llibres i consultar els seus préstecs."/>
+                </VBox>
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

@@ -1,7 +1,7 @@
 .root {
     -fx-font-family: "Calibri", "Candara", "Trebuchet MS", sans-serif;
     -fx-font-size: 14px;
-    -fx-background-color: #EFEAF0;
+
 }
 
 .field-label {
@@ -40,4 +40,45 @@
     -fx-background-color: #f2f2f2;
 }
 
+.error-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #d32f2f;
+    -fx-padding: 12 0;
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-wrap-text: true;
+}
 
+.success-label {
+    -fx-font-size: 15px;
+    -fx-text-fill: #388e3c;
+    -fx-padding: 12 0;
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-wrap-text: true;
+}
+
+/* Estilos globales para combobox */
+.combo-box {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: rgba(94,15,133,0.2);
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10;
+}
+
+.combo-box:focused {
+    -fx-border-color: #7b1fa2;
+    -fx-background-color: white;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 6 10;
+}
+
+.combo-box .list-view {
+    -fx-background-color: white;
+    -fx-border-color: rgba(94,15,133,0.15);
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+}

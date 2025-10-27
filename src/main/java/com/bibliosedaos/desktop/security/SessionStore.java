@@ -18,7 +18,7 @@ public class SessionStore {
     private static final SessionStore INSTANCE = new SessionStore();
 
     private String token;
-    private String userId;
+    private Long userId;
     private int rol;
     private String nom;
     private String cognom1;
@@ -55,14 +55,14 @@ public class SessionStore {
      *
      * @param userId Identificador únic de l'usuari
      */
-    public synchronized void setUserId(String userId) { this.userId = userId; }
+    public synchronized void setUserId(Long userId) { this.userId = userId; }
 
     /**
      * Retorna l'identificador d'usuari.
      *
      * @return Identificador únic de l'usuari
      */
-    public synchronized String getUserId() { return userId; }
+    public synchronized Long getUserId() { return userId; }
 
     /**
      * Estableix el rol de l'usuari.

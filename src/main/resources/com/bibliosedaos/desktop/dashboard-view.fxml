@@ -52,7 +52,7 @@
     </left>
 
     <center>
-        <VBox spacing="10">
+        <VBox spacing="0">
 
             <HBox spacing="12" alignment="TOP_RIGHT" styleClass="header-box">
 
