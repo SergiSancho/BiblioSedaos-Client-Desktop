@@ -17,7 +17,7 @@ En aquesta part del projecte, es desenvoluparà el **client d’escriptori amb J
 
 ## Enllaços als altres components
 - [Servidor](https://github.com/dagaro22/biblioSedaosDavid)  
-- [Client mòbil](https://github.com/oscar/Mobile-BiblioSedaos)
+- [Client mòbil](https://github.com/oscuza/bibliosedos)
 
 ## Requisits principals
 - Gestió d’usuaris (administrador i usuari final)  

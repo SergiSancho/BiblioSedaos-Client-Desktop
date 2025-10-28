@@ -30,7 +30,6 @@ public class ProfileEditController {
 
     private static final Logger LOGGER = Logger.getLogger(ProfileEditController.class.getName());
 
-    // Camps editables
     @FXML private TextField nickField;
     @FXML private TextField nifField;
     @FXML private TextField nomField;
@@ -81,7 +80,7 @@ public class ProfileEditController {
     }
 
     /**
-     * Carrega les dades COMPLETES de l'usuari des del servidor.
+     * Carrega les dades completes de l'usuari des del servidor.
      */
     private void loadUserDataFromServer() {
         SessionStore store = SessionStore.getInstance();
@@ -187,7 +186,7 @@ public class ProfileEditController {
      * @param value valor a verificar
      * @return valor no nul o cadena buida
      */
-    private String safeGet(String value) {
+    String safeGet(String value) {
         return value != null ? value : "";
     }
 
@@ -215,7 +214,7 @@ public class ProfileEditController {
      *
      * @return true si tots els camps son valids, false altrament
      */
-    private boolean validateFields() {
+    boolean validateFields() {
         StringBuilder errorMessage = new StringBuilder();
 
         validateRequiredFields(errorMessage);
@@ -278,7 +277,7 @@ public class ProfileEditController {
      *
      * @return usuari amb les dades del formulari
      */
-    private User createFullUser() {
+    User createFullUser() {
         User user = new User();
         user.setNick(nickField.getText().trim());
         user.setNif(nifField.getText().trim());
@@ -335,7 +334,7 @@ public class ProfileEditController {
      *
      * @param updatedUser usuari amb les dades actualitzades
      */
-    private void updateSessionStore(User updatedUser) {
+    void updateSessionStore(User updatedUser) {
         SessionStore store = SessionStore.getInstance();
         store.setNom(updatedUser.getNom());
         store.setCognom1(updatedUser.getCognom1());

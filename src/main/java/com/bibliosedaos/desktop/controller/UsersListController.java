@@ -451,7 +451,7 @@ public class UsersListController {
      * @param type Tipus de cerca (ID/NIF)
      * @return true si l'entrada és vàlida
      */
-    private boolean validateSearchInput(String query, String type) {
+    boolean validateSearchInput(String query, String type) {
         if ("ID".equals(type) && !query.matches("^\\d+$")) {
             showSearchError("Error de format", "L'ID ha de ser numeric.");
             return false;
