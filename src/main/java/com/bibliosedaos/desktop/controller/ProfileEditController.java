@@ -73,8 +73,8 @@ public class ProfileEditController {
      */
     @FXML
     private void initialize() {
-        AnimationUtils.applyClickEffect(saveButton);
-        AnimationUtils.applyClickEffect(cancelButton);
+        AnimationUtils.safeApplyClick(saveButton);
+        AnimationUtils.safeApplyClick(cancelButton);
         errorLabel.setVisible(false);
         loadUserDataFromServer();
     }
@@ -128,7 +128,7 @@ public class ProfileEditController {
      * @param user usuari amb les dades a mostrar
      */
     private void populateFormWithUserData(User user) {
-        userIdLabel.setText(user.getId() != null ? user.getId().toString() : "");
+        userIdLabel.setText(String.valueOf(currentUserId));
         rolLabel.setText(user.getRol() == 2 ? "Administrador/a" : "Usuari/a");
 
         nickField.setText(safeGet(user.getNick()));

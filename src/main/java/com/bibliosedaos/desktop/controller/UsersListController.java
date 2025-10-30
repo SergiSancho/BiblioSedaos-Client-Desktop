@@ -83,12 +83,7 @@ public class UsersListController {
      */
     @FXML
     private void initialize() {
-        try {
-            applyButtonEffects();
-        } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Error aplicant efectes d'animació", e);
-        }
-
+        applyButtonEffects();
         setupTable();
         initSearchCombo();
         initSearchTypeCombo();
@@ -101,10 +96,10 @@ public class UsersListController {
      * Aplica efectes de clic als botons de la interficie.
      */
     private void applyButtonEffects() {
-        if (newUserButton != null) AnimationUtils.applyClickEffect(newUserButton);
-        if (searchByIdButton != null) AnimationUtils.applyClickEffect(searchByIdButton);
-        if (prevPageButton != null) AnimationUtils.applyClickEffect(prevPageButton);
-        if (nextPageButton != null) AnimationUtils.applyClickEffect(nextPageButton);
+        AnimationUtils.safeApplyClick(newUserButton);
+        AnimationUtils.safeApplyClick(searchByIdButton);
+        AnimationUtils.safeApplyClick(prevPageButton);
+        AnimationUtils.safeApplyClick(nextPageButton);
     }
 
     /**
@@ -156,7 +151,7 @@ public class UsersListController {
             }
 
             /**
-             * Configura les accions dels botons d'acció.
+             * Configura les accions dels botons d'accio.
              */
             private void configureButtonActions() {
                 viewBtn.setOnAction(e -> handleViewAction());
@@ -200,10 +195,10 @@ public class UsersListController {
      * Crea un boto d'accio amb icona.
      *
      * @param svgContent Contingut SVG de l'icona
-     * @param styleClass Classe CSS del botó
+     * @param styleClass Classe CSS del boto
      * @param tooltipText Text del tooltip
-     * @param buttonText Text del botó
-     * @return Botó configurat
+     * @param buttonText Text del boto
+     * @return Boto configurat
      */
     private Button createActionButton(String svgContent, String styleClass, String tooltipText, String buttonText) {
         Button button = new Button();
@@ -214,12 +209,7 @@ public class UsersListController {
         button.setText(buttonText);
         button.getStyleClass().addAll("action-btn", styleClass);
         button.setTooltip(new Tooltip(tooltipText));
-
-        try {
-            AnimationUtils.applyClickEffect(button);
-        } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Error aplicant efecte de clic", e);
-        }
+        AnimationUtils.safeApplyClick(button);
 
         return button;
     }
@@ -228,50 +218,38 @@ public class UsersListController {
      * Inicialitza el combo de cerca per camps.
      */
     private void initSearchCombo() {
-        if (searchFieldCombo != null) {
-            searchFieldCombo.setItems(FXCollections.observableArrayList("Tots", "Nick", "Nom", "Cognom", "Email"));
-            searchFieldCombo.setValue("Tots");
-        }
+        searchFieldCombo.setItems(FXCollections.observableArrayList("Tots", "Nick", "Nom", "Cognom", "Email"));
+        searchFieldCombo.setValue("Tots");
     }
 
     /**
      * Inicialitza el combo de tipus de cerca (ID/NIF).
      */
     private void initSearchTypeCombo() {
-        if (searchTypeCombo != null) {
-            searchTypeCombo.setItems(FXCollections.observableArrayList("ID", "NIF"));
-            searchTypeCombo.setValue("ID");
-        }
+        searchTypeCombo.setItems(FXCollections.observableArrayList("ID", "NIF"));
+        searchTypeCombo.setValue("ID");
     }
 
     /**
      * Configura els listeners per als camps de cerca.
      */
     private void setupListeners() {
-        if (searchField != null) {
-            searchField.textProperty().addListener((obs, o, n) -> applyFilterAndPagination());
-        }
-        if (searchFieldCombo != null) {
-            searchFieldCombo.valueProperty().addListener((obs, o, n) -> applyFilterAndPagination());
-        }
-        if (searchByIdButton != null) searchByIdButton.setOnAction(e -> onSearchById());
-        if (searchByIdField != null) searchByIdField.setOnAction(e -> onSearchById());
-        if (searchTypeCombo != null) {
-            searchTypeCombo.valueProperty().addListener((obs, oldValue, newValue) -> updateSearchByIdPrompt());
-        }
+        searchField.textProperty().addListener((obs, o, n) -> applyFilterAndPagination());
+        searchFieldCombo.valueProperty().addListener((obs, o, n) -> applyFilterAndPagination());
+        searchByIdButton.setOnAction(e -> onSearchById());
+        searchByIdField.setOnAction(e -> onSearchById());
+        searchTypeCombo.valueProperty().addListener((obs, oldValue, newValue) -> updateSearchByIdPrompt());
     }
 
     /**
      * Actualitza el prompt text del camp de cerca segons el tipus seleccionat.
      */
     private void updateSearchByIdPrompt() {
-        if (searchByIdField != null && searchTypeCombo != null) {
-            String searchType = searchTypeCombo.getValue();
-            if ("NIF".equals(searchType)) {
-                searchByIdField.setPromptText("Introdueix NIF");
-            } else {
-                searchByIdField.setPromptText("Introdueix ID");
-            }
+        String searchType = searchTypeCombo.getValue();
+        if ("NIF".equals(searchType)) {
+            searchByIdField.setPromptText("Introdueix NIF");
+        } else {
+            searchByIdField.setPromptText("Introdueix ID");
         }
     }
 
@@ -294,7 +272,7 @@ public class UsersListController {
         task.setOnFailed(e -> {
             Throwable ex = task.getException();
             LOGGER.log(Level.WARNING, "Error carregant usuaris", ex);
-            showError("Error carregant usuaris", ex != null ? ex.getMessage() : "Error desconegut");
+            showError("Error carregant usuaris", ex.getMessage());
         });
 
         ApiClient.BG_EXEC.submit(task);
@@ -304,8 +282,8 @@ public class UsersListController {
      * Aplica els filtres i la paginacio a la llista d'usuaris.
      */
     private void applyFilterAndPagination() {
-        final String query = (searchField == null || searchField.getText() == null) ? "" : searchField.getText().trim().toLowerCase();
-        final String field = (searchFieldCombo == null || searchFieldCombo.getValue() == null) ? "Tots" : searchFieldCombo.getValue();
+        final String query = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
+        final String field = searchFieldCombo.getValue() == null ? "Tots" : searchFieldCombo.getValue();
 
         filteredList.setAll(masterList.filtered(user -> matchesSearchCriteria(user, query, field)));
 
@@ -358,16 +336,12 @@ public class UsersListController {
             currentPageList.clear();
         }
 
-        if (pageInfoLabel != null) {
-            pageInfoLabel.setText(String.format("Pàgina %d de %d", currentPage + 1, totalPages));
-        }
+        pageInfoLabel.setText(String.format("Pàgina %d de %d", currentPage + 1, totalPages));
 
         Platform.runLater(() -> {
             try {
-                if (mainScrollPane != null) {
-                    mainScrollPane.setVvalue(0.0);
-                }
-                if (usersTable != null && !currentPageList.isEmpty()) {
+                mainScrollPane.setVvalue(0.0);
+                if (!currentPageList.isEmpty()) {
                     usersTable.scrollTo(0);
                 }
             } catch (Exception ex) {
@@ -380,12 +354,12 @@ public class UsersListController {
      * Actualitza l'estat dels botons de paginacio.
      */
     private void updatePageButtons() {
-        if (prevPageButton != null) prevPageButton.setDisable(currentPage <= 0);
-        if (nextPageButton != null) nextPageButton.setDisable(currentPage >= totalPages - 1 || filteredList.isEmpty());
+        prevPageButton.setDisable(currentPage <= 0);
+        nextPageButton.setDisable(currentPage >= totalPages - 1 || filteredList.isEmpty());
     }
 
     /**
-     * Gestiona la navegacio a la pàgina anterior.
+     * Gestiona la navegacio a la pagina anterior.
      */
     @FXML
     private void onPreviousPage() {
@@ -397,7 +371,7 @@ public class UsersListController {
     }
 
     /**
-     * Gestiona la navegacio a la pagina següent.
+     * Gestiona la navegacio a la pagina seguent.
      */
     @FXML
     private void onNextPage() {
@@ -413,7 +387,7 @@ public class UsersListController {
      *
      * @param field Camp a verificar
      * @param query Text a cercar
-     * @return true si el camp conté la cerca
+     * @return true si el camp conte la cerca
      */
     private static boolean safeContains(String field, String query) {
         return field != null && field.toLowerCase().contains(query);
@@ -424,8 +398,6 @@ public class UsersListController {
      */
     @FXML
     private void onSearchById() {
-        if (searchByIdField == null || searchTypeCombo == null) return;
-
         String raw = searchByIdField.getText();
         if (raw == null || raw.isBlank()) {
             showSearchError("Error de cerca", "Introdueix un ID o NIF.");
@@ -449,14 +421,14 @@ public class UsersListController {
      *
      * @param query Text de cerca
      * @param type Tipus de cerca (ID/NIF)
-     * @return true si l'entrada és vàlida
+     * @return true si l'entrada es valida
      */
     boolean validateSearchInput(String query, String type) {
         if ("ID".equals(type) && !query.matches("^\\d+$")) {
             showSearchError("Error de format", "L'ID ha de ser numeric.");
             return false;
         } else if ("NIF".equals(type) && !query.matches("^\\d{8}[A-Za-z]$")) {
-            showSearchError("Error de format", "El NIF ha de tenir 8 numeros i 1 lletra.\nExemple: 12345678A");
+            showSearchError("Error de format", "El NIF ha de tenir 8 números i 1 lletra.\nExemple: 12345678A");
             return false;
         }
         return true;
@@ -481,7 +453,7 @@ public class UsersListController {
     }
 
     /**
-     * Configura els manejadors d'èxit i error per a una tasca de cerca.
+     * Configura els manejadors d'exit i error per a una tasca de cerca.
      *
      * @param task Tasca a configurar
      * @param type Tipus de cerca (ID/NIF)
@@ -490,8 +462,8 @@ public class UsersListController {
     private void configureTaskHandlers(Task<User> task, String type, String query) {
         task.setOnSucceeded(e -> {
             User user = task.getValue();
-            if (searchByIdField != null) searchByIdField.clear();
-            if (searchField != null) searchField.clear();
+            searchByIdField.clear();
+            searchField.clear();
 
             if (user == null) {
                 showUserNotFound(type, query);
@@ -502,7 +474,7 @@ public class UsersListController {
         });
 
         task.setOnFailed(e -> {
-            if (searchByIdField != null) searchByIdField.clear();
+            searchByIdField.clear();
             showUserNotFound(type, query);
         });
     }
@@ -529,9 +501,9 @@ public class UsersListController {
     }
 
     /**
-     * Mostra errors de validació o de servidor.
+     * Mostra errors de validacio o de servidor.
      *
-     * @param title Títol de l'error
+     * @param title Titol de l'error
      * @param message Missatge de l'error
      */
     private void showSearchError(String title, String message) {
@@ -547,7 +519,7 @@ public class UsersListController {
     }
 
     /**
-     * Navega a la vista de detalls d'usuari en mode visualització.
+     * Navega a la vista de detalls d'usuari en mode visualitzacio.
      *
      * @param user Usuari a visualitzar
      */
@@ -557,7 +529,7 @@ public class UsersListController {
     }
 
     /**
-     * Navega a la vista d'edició d'usuari en mode edició.
+     * Navega a la vista d'edicio d'usuari en mode edicio.
      *
      * @param user Usuari a editar
      */
@@ -567,7 +539,7 @@ public class UsersListController {
     }
 
     /**
-     * Gestiona l'eliminació d'un usuari.
+     * Gestiona l'eliminacio d'un usuari.
      *
      * @param user Usuari a eliminar
      */
@@ -604,7 +576,7 @@ public class UsersListController {
         task.setOnFailed(e -> {
             Throwable ex = task.getException();
             LOGGER.log(Level.WARNING, "Error eliminant usuari", ex);
-            showError("Error eliminant usuari", ex != null ? ex.getMessage() : "Error desconegut");
+            showError("Error eliminant usuari", ex.getMessage());
         });
 
         ApiClient.BG_EXEC.submit(task);
@@ -613,7 +585,7 @@ public class UsersListController {
     /**
      * Mostra un dialeg d'error.
      *
-     * @param title Títol de l'error
+     * @param title Titol de l'error
      * @param message Missatge de l'error
      */
     private void showError(String title, String message) {

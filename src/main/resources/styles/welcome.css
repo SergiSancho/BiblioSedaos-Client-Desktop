@@ -12,7 +12,7 @@
     -fx-max-width: 420px;
 
     -fx-background-image: url("../com/bibliosedaos/desktop/images/welcome.png");
-    -fx-background-position: center_left;
+    -fx-background-position: 0% 50%;
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-size: auto 100%;

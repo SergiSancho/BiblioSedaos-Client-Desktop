@@ -1,13 +1,12 @@
 package com.bibliosedaos.desktop.api;
 
-import com.bibliosedaos.desktop.api.http.HttpAuthApi;
-import com.bibliosedaos.desktop.api.http.HttpUserApi;
+import com.bibliosedaos.desktop.api.http.*;
 import com.bibliosedaos.desktop.api.mock.MockAuthApi;
 
 /**
- * Fàbrica per a la creació d'implementacions d'API.
+ * Fabrica per a la creacio d'implementacions d'API.
  *
- * Permet alternar entre mode mock i mode real segons la configuració,
+ * Permet alternar entre mode mock i mode real segons la configuracio,
  * facilitant el desenvolupament i les proves.
  *
  * @author Sergio
@@ -28,7 +27,7 @@ public final class ApiFactory {
     }
 
     /**
-     * Estableix el mode d'operació de les APIs.
+     * Estableix el mode d'operacio de les APIs.
      *
      * @param value true per utilitzar mocks, false per implementacions reals
      */
@@ -46,12 +45,12 @@ public final class ApiFactory {
     }
 
     /**
-     * Crea una implementació d'AuthApi segons la configuració actual.
+     * Crea una implementacio d'AuthApi segons la configuració actual.
      *
-     * En mode mock retorna una implementació amb dades fictícies,
+     * En mode mock retorna una implementació amb dades ficticies,
      * en mode real retorna un client HTTP que es comunica amb el servidor.
      *
-     * @return implementació configurada d'AuthApi
+     * @return implementacio configurada d'AuthApi
      */
     public static AuthApi createAuthApi() {
         if (useMock) {
@@ -62,14 +61,50 @@ public final class ApiFactory {
     }
 
     /**
-     * Crea una implementació d'UserApi segons la configuració actual.
+     * Crea una implementacio d'UserApi segons la configuracio actual.
      *
-     * En mode mock no implementat
+     * En mode mock no implementat,
      * en mode real retorna un client HTTP que es comunica amb el servidor.
      *
-     * @return implementació configurada d'UserApi
+     * @return implementacio configurada d'UserApi
      */
     public static UserApi createUserApi() {
         return new HttpUserApi();
+    }
+
+    /**
+     * Crea una implementacio de LlibreApi segons la configuracio actual.
+     *
+     * En mode mock no implementat,
+     * en mode real retorna un client HTTP que es comunica amb el servidor.
+     *
+     * @return implementacio configurada de LlibreApi
+     */
+    public static LlibreApi createLlibreApi() {
+        return new HttpLlibreApi();
+    }
+
+    /**
+     * Crea una implementacio d'AutorApi segons la configuracio actual.
+     *
+     * En mode mock no implementat,
+     * en mode real retorna un client HTTP que es comunica amb el servidor.
+     *
+     * @return implementacio configurada d'AutorApi
+     */
+    public static AutorApi createAutorApi() {
+        return new HttpAutorApi();
+    }
+
+    /**
+     * Crea una implementacio d'ExemplarApi segons la configuracio actual.
+     *
+     * En mode mock no implementat,
+     * en mode real retorna un client HTTP que es comunica amb el servidor.
+     *
+     * @return implementacio configurada d'ExemplarApi
+     */
+    public static ExemplarApi createExemplarApi() {
+        return new HttpExemplarApi();
     }
 }

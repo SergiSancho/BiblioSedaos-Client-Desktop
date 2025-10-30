@@ -6,10 +6,6 @@ import java.util.List;
 /**
  * Interficie per a les operacions d'usuari.
  * Gestiona la recuperacio i actualitzacio de dades d'usuari.
- *
- * Assistència d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
- * S'ha revisat i adaptat manualment per l'autor. Veure llegeixme.pdf per detalls.
- *
  * @author Sergio
  * @version 1.0-SNAPSHOT
  * @since 2025

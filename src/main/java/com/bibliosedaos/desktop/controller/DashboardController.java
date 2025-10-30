@@ -6,7 +6,6 @@ import com.bibliosedaos.desktop.ui.navigator.Navigator;
 import com.bibliosedaos.desktop.ui.util.AnimationUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -64,7 +63,7 @@ public class DashboardController {
      */
     @FXML
     private void initialize() {
-        initializeButtonEffects();
+        applyButtonEffects();
         setupNavigation();
         setupBySessionStore();
         setupWindowCloseHandler();
@@ -73,37 +72,17 @@ public class DashboardController {
     /**
      * Aplica efectes de click als botons de la interficie.
      */
-    private void initializeButtonEffects() {
-        safeApplyClick(editProfileButton);
-        safeApplyClick(logoutButton);
-
-        Platform.runLater(() -> {
-            if (sidebar != null) {
-                sidebar.lookupAll(".sidebar-btn").forEach(AnimationUtils::applyClickEffect);
-            } else {
-                LOGGER.fine("sidebar no injectat - revisa fx:id en FXML");
-            }
-        });
+    private void applyButtonEffects() {
+        AnimationUtils.safeApplyClick(editProfileButton);
+        AnimationUtils.safeApplyClick(logoutButton);
+        AnimationUtils.safeApplyClickToAll(sidebar, ".sidebar-btn");
     }
 
     /**
      * Configura l'àrea de contingut principal per a la navegació dinàmica.
      */
     private void setupNavigation() {
-        try {
-            navigator.setMainContentArea(mainContentStack);
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "No s'ha pogut configurar l'àrea principal de navegació: {0}", e.getMessage());
-        }
-    }
-
-    /**
-     * Aplica efecte de click a un botó de forma segura.
-     *
-     * @param b botó al qual aplicar l'efecte
-     */
-    private void safeApplyClick(Button b) {
-        if (b != null) AnimationUtils.applyClickEffect(b);
+        navigator.setMainContentArea(mainContentStack);
     }
 
     /**
@@ -137,8 +116,8 @@ public class DashboardController {
      */
     private void configureUserInfo(SessionStore store) {
         setDisplayName(buildDisplayName(store));
-        Long uid = store.getUserId(); // CAMBIO: Ahora es Long
-        if (userIdLabel != null) userIdLabel.setText(uid == null ? "" : "ID: " + uid.toString());
+        Long uid = store.getUserId();
+        userIdLabel.setText(uid == null ? "" : "ID: " + uid);
     }
 
     /**
@@ -155,13 +134,7 @@ public class DashboardController {
      * Carrega la vista inicial al panell central.
      */
     private void loadInitialView() {
-        Platform.runLater(() -> {
-            try {
-                navigator.showMainView("/com/bibliosedaos/desktop/welcome-view.fxml");
-            } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "No s'ha pogut carregar la vista d'inici: {0}", e.getMessage());
-            }
-        });
+        Platform.runLater(() -> navigator.showMainView("/com/bibliosedaos/desktop/welcome-view.fxml"));
     }
 
     /**
@@ -174,10 +147,10 @@ public class DashboardController {
         String nom = safeTrim(store.getNom());
         String cognom1 = safeTrim(store.getCognom1());
         String cognom2 = safeTrim(store.getCognom2());
-        Long uid = store.getUserId(); // CAMBIO: Ahora es Long
+        Long uid = store.getUserId();
 
         if (nom.isEmpty()) {
-            return (uid == null ? "Usuari/a desconegut" : uid.toString());
+            return uid == null ? "Usuari/a desconegut" : uid.toString();
         }
 
         StringBuilder sb = new StringBuilder(nom);
@@ -202,7 +175,7 @@ public class DashboardController {
      * @param name nom a mostrar
      */
     private void setDisplayName(String name) {
-        if (userNameLabel != null) userNameLabel.setText(name);
+        userNameLabel.setText(name);
     }
 
     /**
@@ -226,16 +199,14 @@ public class DashboardController {
     }
 
     /**
-     * Estableix la visibilitat d'un node de forma segura.
+     * Estableix la visibilitat d'un node.
      *
      * @param node node a configurar
      * @param visible true per mostrar, false per amagar
      */
-    private void setVisibility(Node node, boolean visible) {
-        if (node != null) {
-            node.setVisible(visible);
-            node.setManaged(visible);
-        }
+    private void setVisibility(javafx.scene.Node node, boolean visible) {
+        node.setVisible(visible);
+        node.setManaged(visible);
     }
 
     /**
@@ -280,15 +251,11 @@ public class DashboardController {
      */
     private void setupWindowCloseHandler() {
         Platform.runLater(() -> {
-            try {
-                Stage stage = (Stage) logoutButton.getScene().getWindow();
-                stage.setOnCloseRequest(event -> {
-                    event.consume();
-                    performLogout();
-                });
-            } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "No ha pogut configurar tancament de finestra: {0}", e.getMessage());
-            }
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setOnCloseRequest(event -> {
+                event.consume();
+                performLogout();
+            });
         });
     }
 
@@ -305,7 +272,6 @@ public class DashboardController {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "ERROR CRÍTICO al navegar a {0}: {1}",
                     new Object[]{fxmlPath, e.getMessage()});
-            e.printStackTrace(); // Para ver el stack trace completo
         }
     }
 

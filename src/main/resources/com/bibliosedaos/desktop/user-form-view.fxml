@@ -7,7 +7,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.bibliosedaos.desktop.controller.UserFormController"
             prefWidth="820" prefHeight="700"
-            id="userFormRoot"
+            id="formRoot"
             styleClass="root">
 
     <center>
@@ -104,18 +104,19 @@
                         <Region HBox.hgrow="ALWAYS"/>
 
                         <Button fx:id="editButton" text="Editar" onAction="#onEdit"
-                                styleClass="secondary-btn" prefWidth="140" visible="false"/>
+                                styleClass="primary-btn" prefWidth="140" visible="false"/>
                         <Button fx:id="deleteButton" text="Eliminar" onAction="#onDelete"
-                                styleClass="secondary-btn" prefWidth="140" visible="false"/>
+                                styleClass="primary-btn" prefWidth="140" visible="false"/>
                         <Button fx:id="backButton" text="Tornar" onAction="#onBack"
                                 styleClass="secondary-btn" prefWidth="140" visible="false"/>
 
                         <Region prefWidth="16"/>
 
-                        <Button fx:id="cancelButton" text="Cancelar" onAction="#onCancel"
-                                styleClass="secondary-btn" prefWidth="140" visible="false"/>
                         <Button fx:id="saveButton" text="Guardar" onAction="#onSave"
                                 styleClass="primary-btn" prefWidth="140" visible="false"/>
+                        <Button fx:id="cancelButton" text="Cancel·lar" onAction="#onCancel"
+                                styleClass="secondary-btn" prefWidth="140" visible="false"/>
+
                     </HBox>
                 </GridPane>
 

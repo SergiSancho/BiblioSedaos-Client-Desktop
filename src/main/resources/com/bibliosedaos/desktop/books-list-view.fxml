@@ -5,7 +5,7 @@
 <?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.bibliosedaos.desktop.controller.UsersListController"
+            fx:controller="com.bibliosedaos.desktop.controller.BooksListController"
             prefWidth="1200" prefHeight="800"
             styleClass="root">
 
@@ -16,8 +16,8 @@
             </padding>
 
             <HBox alignment="CENTER" spacing="18">
-                <SVGPath styleClass="header-icon" content="M17.997 18h-11.995l-.002-.623c0-1.259.1-1.986 1.588-2.33 1.684-.389 3.344-.736 2.545-2.209-2.366-4.363-.674-6.838 1.866-6.838 2.491 0 4.226 2.383 1.866 6.839-.775 1.464.826 1.812 2.545 2.209 1.49.344 1.589 1.072 1.589 2.333l-.002.619zm4.811-2.214c-1.29-.298-2.49-.559-1.909-1.657 1.769-3.342.469-5.129-1.4-5.129-1.265 0-2.248.817-2.248 2.324 0 3.903 2.268 1.77 2.246 6.676h4.501l.002-.463c0-.946-.074-1.493-1.192-1.751zm-22.806 2.214h4.501c-.021-4.906 2.246-2.772 2.246-6.676 0-1.507-.983-2.324-2.248-2.324-1.869 0-3.169 1.787-1.399 5.129.581 1.099-.619 1.359-1.909 1.657-1.119.258-1.193.805-1.193 1.751l.002.463z"/>
-                <Label text="Gestió d'Usuàries" styleClass="header-title"/>
+                <SVGPath styleClass="header-icon" content="M14 0v10l2-1.518 2 1.518v-10h4v24h-17c-1.657 0-3-1.343-3-3v-18c0-1.657 1.343-3 3-3h9zm6 20h-14.505c-1.375 0-1.375 2 0 2h14.505v-2z"/>
+                <Label text="Gestió de Llibres" styleClass="header-title"/>
             </HBox>
 
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="search-container">
@@ -29,19 +29,20 @@
 
                 <Region prefWidth="20"/>
 
-                <ComboBox fx:id="searchTypeCombo" prefWidth="110" promptText="Tipus" styleClass="search-type-combo"/>
+                <Label text="ID llibre:" styleClass="search-type-combo"/>
                 <HBox styleClass="search-id-container">
-                    <TextField fx:id="searchByIdField" styleClass="search-id-field-integrated"/>
-                    <Button fx:id="searchByIdButton" onAction="#onSearchById" styleClass="search-id-button">
+                    <TextField fx:id="searchByIdField" promptText="Introdueix ID" styleClass="search-id-field-integrated"/>
+                    <Button fx:id="newExemplarButton" onAction="#onNewExemplar" styleClass="search-id-button" text="Nou Exemplar">
                         <graphic>
-                            <SVGPath styleClass="search-icon-button" content="M23.111 20.058l-4.977-4.977c.965-1.52 1.523-3.322 1.523-5.251 0-5.42-4.409-9.83-9.829-9.83-5.42 0-9.828 4.41-9.828 9.83s4.408 9.83 9.829 9.83c1.834 0 3.552-.505 5.022-1.383l5.021 5.021c2.144 2.141 5.384-1.096 3.239-3.24zm-20.064-10.228c0-3.739 3.043-6.782 6.782-6.782s6.782 3.042 6.782 6.782-3.043 6.782-6.782 6.782-6.782-3.043-6.782-6.782zm2.01-1.764c1.984-4.599 8.664-4.066 9.922.749-2.534-2.974-6.993-3.294-9.922-.749z"/>
+                            <SVGPath styleClass="search-icon-button" content="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z"/>
                         </graphic>
-                        <tooltip><Tooltip text="Cercar per ID o NIF"/></tooltip>
+                        <tooltip><Tooltip text="Introdueix ID per afegir exemplar"/></tooltip>
                     </Button>
                 </HBox>
 
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="newUserButton" onAction="#onNewUser" styleClass="primary-btn" text="➕ Afegir Nou">
+
+                <Button fx:id="newBookButton" onAction="#onNewBook" styleClass="primary-btn" text="➕ Nou Llibre">
                     <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
                 </Button>
             </HBox>
@@ -53,15 +54,12 @@
             <VBox spacing="8" styleClass="table-container">
                 <padding><Insets top="8" right="24" bottom="8" left="24"/></padding>
 
-                <TableView fx:id="usersTable" styleClass="data-table" VBox.vgrow="ALWAYS" fixedCellSize="36">
+                <TableView fx:id="booksTable" styleClass="data-table" VBox.vgrow="ALWAYS" fixedCellSize="36">
                     <columns>
-                        <TableColumn fx:id="idColumn" text="ID" styleClass="id-column" minWidth="45"/>
-                        <TableColumn fx:id="nickColumn" text="Nick" styleClass="text-column" minWidth="80"/>
-                        <TableColumn fx:id="nomColumn" text="Nom" styleClass="text-column" minWidth="100"/>
-                        <TableColumn fx:id="cognom1Column" text="Cognom" styleClass="text-column" minWidth="100"/>
-                        <TableColumn fx:id="emailColumn" text="Email" styleClass="text-column" minWidth="150"/>
-                        <TableColumn fx:id="rolColumn" text="Rol" styleClass="rol-column" minWidth="45"/>
-                        <TableColumn fx:id="actionsColumn" text="Accions" styleClass="actions-column"  minWidth="267"/>
+                        <TableColumn fx:id="idColumn" text="ID" styleClass="id-column" prefWidth="45"/>
+                        <TableColumn fx:id="titolColumn" text="Títol" minWidth="260"/>
+                        <TableColumn fx:id="autorColumn" text="Autor" minWidth="160"/>
+                        <TableColumn fx:id="actionsColumn" text="Accions" styleClass="actions-column" minWidth="267"/>
                     </columns>
                 </TableView>
 

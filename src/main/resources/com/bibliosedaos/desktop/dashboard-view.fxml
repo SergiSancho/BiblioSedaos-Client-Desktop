@@ -6,7 +6,6 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.bibliosedaos.desktop.controller.DashboardController"
-            fx:id="rootPane"
             prefWidth="1200" prefHeight="800"
             styleClass="root">
     <top>
@@ -15,33 +14,33 @@
 
     <left>
         <VBox fx:id="sidebar" spacing="8" styleClass="left-pane" prefWidth="200">
-            <Button fx:id="btnDashboard" onAction="#onShowHome" styleClass="sidebar-btn" text="Inici">
+            <Button onAction="#onShowHome" styleClass="sidebar-btn" text="Inici">
                 <graphic>
                     <SVGPath content="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                 </graphic>
             </Button>
 
             <VBox fx:id="adminGroup" spacing="4" visible="false" managed="false">
-                <Label fx:id="adminLabel" text="Administrador/a" styleClass="sidebar-section"/>
-                <Button fx:id="btnUsers" onAction="#onManageUsers" styleClass="sidebar-btn" text="Gestió Usuàries">
+                <Label text="Administrador/a" styleClass="sidebar-section"/>
+                <Button onAction="#onManageUsers" styleClass="sidebar-btn" text="Gestió Usuàries">
                     <graphic>
                         <SVGPath content="M17.997 18h-11.995l-.002-.623c0-1.259.1-1.986 1.588-2.33 1.684-.389 3.344-.736 2.545-2.209-2.366-4.363-.674-6.838 1.866-6.838 2.491 0 4.226 2.383 1.866 6.839-.775 1.464.826 1.812 2.545 2.209 1.49.344 1.589 1.072 1.589 2.333l-.002.619zm4.811-2.214c-1.29-.298-2.49-.559-1.909-1.657 1.769-3.342.469-5.129-1.4-5.129-1.265 0-2.248.817-2.248 2.324 0 3.903 2.268 1.77 2.246 6.676h4.501l.002-.463c0-.946-.074-1.493-1.192-1.751zm-22.806 2.214h4.501c-.021-4.906 2.246-2.772 2.246-6.676 0-1.507-.983-2.324-2.248-2.324-1.869 0-3.169 1.787-1.399 5.129.581 1.099-.619 1.359-1.909 1.657-1.119.258-1.193.805-1.193 1.751l.002.463z"/>
                     </graphic>
                 </Button>
-                <Button fx:id="btnBooks" onAction="#onManageBooks" styleClass="sidebar-btn" text="Gestió Llibres">
+                <Button onAction="#onManageBooks" styleClass="sidebar-btn" text="Gestió Llibres">
                     <graphic><SVGPath content="M14 0v10l2-1.518 2 1.518v-10h4v24h-17c-1.657 0-3-1.343-3-3v-18c0-1.657 1.343-3 3-3h9zm6 20h-14.505c-1.375 0-1.375 2 0 2h14.505v-2z"/></graphic>
                 </Button>
-                <Button fx:id="btnLoans" onAction="#onManageLoans" styleClass="sidebar-btn" text="Gestió Préstecs">
+                <Button onAction="#onManageLoans" styleClass="sidebar-btn" text="Gestió Préstecs">
                     <graphic><SVGPath content="M12.5 17.52c1.415-1.054 3.624-1.846 5.5-2v6.479c-1.739.263-3.755 1.104-5.5 2v-6.479zm-1 0c-1.415-1.054-3.624-1.846-5.5-2v6.479c1.739.263 3.755 1.104 5.5 2v-6.479zm-6.5 2.917c-2.049-.674-2.996-1.437-2.996-1.437l-.004-2.025c-.008-2.127.088-3.344 2.648-3.909 2.805-.619 5.799-1.317 4.241-3.521-3.901-5.523-.809-9.545 3.111-9.545 3.921 0 6.996 3.991 3.11 9.545-1.529 2.185 1.376 2.888 4.242 3.521 2.57.568 2.657 1.791 2.647 3.934l-.003 2s-.947.763-2.996 1.437v-6.003l-1.082.089c-2.054.169-4.36 1.002-5.918 2.128-1.559-1.126-3.863-1.959-5.918-2.128l-1.082-.089v6.003z"/></graphic>
                 </Button>
             </VBox>
 
             <VBox fx:id="userGroup" spacing="4" visible="false" managed="false">
                 <Label text="Usuari/a" styleClass="sidebar-section"/>
-                <Button fx:id="btnMyLoans" onAction="#onViewMyLoans" styleClass="sidebar-btn" text="Els meus préstecs">
+                <Button onAction="#onViewMyLoans" styleClass="sidebar-btn" text="Els meus préstecs">
                     <graphic><SVGPath content="M12.5 17.52c1.415-1.054 3.624-1.846 5.5-2v6.479c-1.739.263-3.755 1.104-5.5 2v-6.479zm-1 0c-1.415-1.054-3.624-1.846-5.5-2v6.479c1.739.263 3.755 1.104 5.5 2v-6.479zm-6.5 2.917c-2.049-.674-2.996-1.437-2.996-1.437l-.004-2.025c-.008-2.127.088-3.344 2.648-3.909 2.805-.619 5.799-1.317 4.241-3.521-3.901-5.523-.809-9.545 3.111-9.545 3.921 0 6.996 3.991 3.11 9.545-1.529 2.185 1.376 2.888 4.242 3.521 2.57.568 2.657 1.791 2.647 3.934l-.003 2s-.947.763-2.996 1.437v-6.003l-1.082.089c-2.054.169-4.36 1.002-5.918 2.128-1.559-1.126-3.863-1.959-5.918-2.128l-1.082-.089v6.003z"/></graphic>
                 </Button>
-                <Button fx:id="btnBrowseBooks" onAction="#onBrowseBooks" styleClass="sidebar-btn" text="Cercar Llibres">
+                <Button onAction="#onBrowseBooks" styleClass="sidebar-btn" text="Cercar Llibres">
                     <graphic><SVGPath content="M23.111 20.058l-4.977-4.977c.965-1.52 1.523-3.322 1.523-5.251 0-5.42-4.409-9.83-9.829-9.83-5.42 0-9.828 4.41-9.828 9.83s4.408 9.83 9.829 9.83c1.834 0 3.552-.505 5.022-1.383l5.021 5.021c2.144 2.141 5.384-1.096 3.239-3.24zm-20.064-10.228c0-3.739 3.043-6.782 6.782-6.782s6.782 3.042 6.782 6.782-3.043 6.782-6.782 6.782-6.782-3.043-6.782-6.782zm2.01-1.764c1.984-4.599 8.664-4.066 9.922.749-2.534-2.974-6.993-3.294-9.922-.749z"/></graphic>
                 </Button>
             </VBox>
@@ -52,7 +51,7 @@
     </left>
 
     <center>
-        <VBox spacing="0">
+        <VBox>
 
             <HBox spacing="12" alignment="TOP_RIGHT" styleClass="header-box">
 

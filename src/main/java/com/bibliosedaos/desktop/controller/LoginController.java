@@ -64,9 +64,9 @@ public class LoginController {
      */
     @FXML
     private void initialize() {
-        if (errorLabel != null) errorLabel.setVisible(false);
-        AnimationUtils.applyClickEffect(loginButton);
-        AnimationUtils.applyClickEffect(cancelButton);
+        errorLabel.setVisible(false);
+        AnimationUtils.safeApplyClick(loginButton);
+        AnimationUtils.safeApplyClick(cancelButton);
         cancelButton.setDisable(false);
     }
 
@@ -76,10 +76,10 @@ public class LoginController {
      */
     @FXML
     void onLogin() {
-        if (errorLabel != null) errorLabel.setVisible(false);
+        errorLabel.setVisible(false);
 
-        final String nick = usernameField.getText() == null ? "" : usernameField.getText().trim();
-        final String password = passwordField.getText() == null ? "" : passwordField.getText();
+        final String nick = usernameField.getText().trim();
+        final String password = passwordField.getText();
 
         String validationError = validateLoginLogic(nick, password);
         if (validationError != null) {
@@ -113,8 +113,10 @@ public class LoginController {
 
         task.setOnFailed(evt -> {
             Throwable ex = task.getException();
-            showError(ex instanceof ApiException ? ex.getMessage() : "Error al connectar: " + (ex == null ? "desconegut" : ex.getMessage()));
-            LOGGER.log(Level.WARNING, "Login fallit: {0}", new Object[] { ex == null ? "desconegut" : ex.getMessage() });
+            String errorMessage = ex instanceof ApiException ?
+                    ex.getMessage() : "Error al connectar: " + ex.getMessage();
+            showError(errorMessage);
+            LOGGER.log(Level.WARNING, "Login fallit: {0}", ex.getMessage());
             restoreUiState();
             currentTask = null;
         });
@@ -151,7 +153,6 @@ public class LoginController {
      * @param msg missatge d'error a mostrar
      */
     private void showError(String msg) {
-        if (errorLabel == null) return;
         if (Platform.isFxApplicationThread()) {
             errorLabel.setText(msg);
             errorLabel.setVisible(true);
@@ -171,9 +172,15 @@ public class LoginController {
      * @return missatge d'error o null si és vàlid
      */
     String validateLoginLogic(String nick, String password) {
-        if (nick.isEmpty() || password.isEmpty()) return "Omple l'usuari/a i la contrasenya";
-        if (nick.length() > MAX_NICK_LENGTH) return "El nick ha de tenir un màxim de " + MAX_NICK_LENGTH + " caràcters.";
-        if (password.length() > MAX_PASSWORD_LENGTH) return "La contrasenya ha de tenir un màxim de " + MAX_PASSWORD_LENGTH + " caràcters.";
+        if (nick.isEmpty() || password.isEmpty()) {
+            return "Omple l'usuari/a i la contrasenya";
+        }
+        if (nick.length() > MAX_NICK_LENGTH) {
+            return "El nick ha de tenir un màxim de " + MAX_NICK_LENGTH + " caràcters.";
+        }
+        if (password.length() > MAX_PASSWORD_LENGTH) {
+            return "La contrasenya ha de tenir un màxim de " + MAX_PASSWORD_LENGTH + " caràcters.";
+        }
         return null;
     }
 
@@ -181,15 +188,15 @@ public class LoginController {
      * Deshabilita la interfície durant l'autenticació.
      */
     private void disableUiDuringLogin() {
-        if (loginButton != null) loginButton.setDisable(true);
-        if (cancelButton != null) cancelButton.setDisable(false);
+        loginButton.setDisable(true);
+        cancelButton.setDisable(false);
     }
 
     /**
      * Restaura l'estat de la interfície després de l'autenticació.
      */
     private void restoreUiState() {
-        if (loginButton != null) loginButton.setDisable(false);
-        if (cancelButton != null) cancelButton.setDisable(false);
+        loginButton.setDisable(false);
+        cancelButton.setDisable(false);
     }
 }

@@ -5,8 +5,7 @@ import com.bibliosedaos.desktop.api.ApiFactory;
 import com.bibliosedaos.desktop.api.AuthApi;
 import com.bibliosedaos.desktop.api.UserApi;
 import com.bibliosedaos.desktop.controller.*;
-import com.bibliosedaos.desktop.service.AuthService;
-import com.bibliosedaos.desktop.service.UserService;
+import com.bibliosedaos.desktop.service.*;
 import com.bibliosedaos.desktop.ui.navigator.Navigator;
 import javafx.application.Application;
 import javafx.scene.image.Image;
@@ -44,6 +43,8 @@ public class MainApp extends Application {
     private static final String PROFILE_EDIT_VIEW = "/com/bibliosedaos/desktop/profile-edit-view.fxml";
     private static final String USERS_LIST_VIEW = "/com/bibliosedaos/desktop/users-list-view.fxml";
     private static final String USER_FORM_VIEW = "/com/bibliosedaos/desktop/user-form-view.fxml";
+    private static final String BOOKS_LIST_VIEW = "/com/bibliosedaos/desktop/books-list-view.fxml";
+    private static final String BOOK_FORM_VIEW  = "/com/bibliosedaos/desktop/book-form-view.fxml";
     private static final boolean DEFAULT_USE_MOCK = true;
     private static final double DEFAULT_WIDTH = 1000.0;
     private static final double DEFAULT_HEIGHT = 600.0;
@@ -82,8 +83,11 @@ public class MainApp extends Application {
         nav.registerViewCss(DASHBOARD_VIEW, "/styles/dashboard.css");
         nav.registerViewCss(WELCOME_VIEW, "/styles/welcome.css");
         nav.registerViewCss(PROFILE_EDIT_VIEW, "/styles/profile-edit.css");
-        nav.registerViewCss(USERS_LIST_VIEW, "/styles/users-list.css");
-        nav.registerViewCss(USER_FORM_VIEW, "/styles/user-form.css");
+        nav.registerViewCss(USERS_LIST_VIEW, "/styles/list.css");
+        nav.registerViewCss(USER_FORM_VIEW, "/styles/form.css");
+        nav.registerViewCss(BOOKS_LIST_VIEW, "/styles/list.css");
+        nav.registerViewCss(BOOK_FORM_VIEW, "/styles/form.css");
+
 
         setupStage(stage);
 
@@ -94,6 +98,10 @@ public class MainApp extends Application {
         UserApi userApi = ApiFactory.createUserApi();
         UserService userService = new UserService(userApi);
 
+        LlibreService llibreService = new LlibreService(ApiFactory.createLlibreApi());
+        AutorService autorService = new AutorService(ApiFactory.createAutorApi());
+        ExemplarService exemplarService = new ExemplarService(ApiFactory.createExemplarApi());
+
         // ControllerFactory per a injecció de dependències en controladors
         nav.setControllerFactory(clazz -> {
             try {
@@ -102,7 +110,8 @@ public class MainApp extends Application {
                 if (clazz == ProfileEditController.class) return new ProfileEditController(userService, nav);
                 if (clazz == UsersListController.class) return new UsersListController(userService, nav);
                 if (clazz == UserFormController.class) return new UserFormController(userService, nav);
-
+                if (clazz == BooksListController.class) return new BooksListController(llibreService, exemplarService, nav);
+                if (clazz == BookFormController.class) return new BookFormController(llibreService, autorService, exemplarService, nav);
                 return clazz.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error creando controller {0}", clazz.getName());

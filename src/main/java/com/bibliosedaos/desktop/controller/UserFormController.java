@@ -12,7 +12,6 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.SVGPath;
 
 import java.util.Objects;
@@ -23,7 +22,7 @@ import java.util.logging.Logger;
  * Controlador per al formulari de gestio d'usuaris.
  * Gestiona la creacio, edicio i visualitzacio d'usuaris en diferents modes (CREATE, EDIT, VIEW).
  *
- * Assistencia d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
+ * Assistencia d'IA: fragments de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
  * S'ha revisat i adaptat manualment per l'autor. Veure llegeixme.pdf per detalls.
  *
  * @author Sergio
@@ -40,8 +39,6 @@ public class UserFormController {
     private static final String MODE_VIEW = "VIEW";
     private static final String USERS_LIST_PATH = "/com/bibliosedaos/desktop/users-list-view.fxml";
 
-    @SuppressWarnings("unused") // inyectado por FXML, análisis estático puede advertir
-    @FXML private BorderPane userFormRoot;
     @FXML private TextField nickField;
     @FXML private TextField nifField;
     @FXML private TextField nomField;
@@ -93,25 +90,17 @@ public class UserFormController {
      */
     @FXML
     private void initialize() {
-        try {
-            if (saveButton != null) AnimationUtils.applyClickEffect(saveButton);
-            if (cancelButton != null) AnimationUtils.applyClickEffect(cancelButton);
-            if (backButton != null) AnimationUtils.applyClickEffect(backButton);
-            if (editButton != null) AnimationUtils.applyClickEffect(editButton);
-            if (deleteButton != null) AnimationUtils.applyClickEffect(deleteButton);
-        } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Error aplicant efectes d'animacio", e);
-        }
+        AnimationUtils.safeApplyClick(saveButton);
+        AnimationUtils.safeApplyClick(cancelButton);
+        AnimationUtils.safeApplyClick(backButton);
+        AnimationUtils.safeApplyClick(editButton);
+        AnimationUtils.safeApplyClick(deleteButton);
 
-        if (errorLabel != null) {
-            errorLabel.setVisible(false);
-            errorLabel.setManaged(true);
-        }
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(true);
 
-        if (roleCombo != null) {
-            roleCombo.setItems(FXCollections.observableArrayList(ROLE_USER, ROLE_ADMIN));
-            roleCombo.setValue(ROLE_USER);
-        }
+        roleCombo.setItems(FXCollections.observableArrayList(ROLE_USER, ROLE_ADMIN));
+        roleCombo.setValue(ROLE_USER);
 
         if (mode == null) mode = MODE_VIEW;
 
@@ -128,7 +117,6 @@ public class UserFormController {
      * @param visible true per mostrar, false per amagar
      */
     private void setVisibleManaged(Node node, boolean visible) {
-        if (node == null) return;
         node.setVisible(visible);
         node.setManaged(visible);
     }
@@ -141,11 +129,6 @@ public class UserFormController {
         final String iconPencil = "M14.078 4.232l-12.64 12.639-1.438 7.129 7.127-1.438 12.641-12.64-5.69-5.69zm-10.369 14.893l-.85-.85 11.141-11.125.849.849-11.14 11.126zm2.008 2.008l-.85-.85 11.141-11.125.85.850-11.141 11.125zm18.283-15.444l-2.816 2.818-5.691-5.691 2.816-2.816 5.691 5.689z";
         final String iconPlus = "M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z";
 
-        if (userFormRoot != null && mode != null) {
-            userFormRoot.getStyleClass().removeIf(s -> s.startsWith("mode-"));
-            userFormRoot.getStyleClass().add("mode-" + mode.toLowerCase());
-        }
-
         setVisibleManaged(saveButton, false);
         setVisibleManaged(cancelButton, false);
         setVisibleManaged(backButton, false);
@@ -154,11 +137,9 @@ public class UserFormController {
         setVisibleManaged(roleCombo, false);
         setVisibleManaged(rolLabel, true);
 
-        if (formIcon != null) {
-            formIcon.getStyleClass().removeAll("icon-eye", "icon-pencil", "icon-plus");
-            formIcon.setVisible(true);
-            formIcon.setManaged(true);
-        }
+        formIcon.getStyleClass().removeAll("icon-eye", "icon-pencil", "icon-plus");
+        formIcon.setVisible(true);
+        formIcon.setManaged(true);
 
         switch (mode) {
             case MODE_VIEW:
@@ -172,10 +153,8 @@ public class UserFormController {
                 setVisibleManaged(rolLabel, true);
                 setVisibleManaged(roleCombo, false);
 
-                if (formIcon != null) {
-                    formIcon.setContent(iconEye);
-                    formIcon.getStyleClass().add("icon-eye");
-                }
+                formIcon.setContent(iconEye);
+                formIcon.getStyleClass().add("icon-eye");
                 break;
 
             case MODE_EDIT:
@@ -188,10 +167,8 @@ public class UserFormController {
                 setVisibleManaged(rolLabel, true);
                 setVisibleManaged(roleCombo, false);
 
-                if (formIcon != null) {
-                    formIcon.setContent(iconPencil);
-                    formIcon.getStyleClass().add("icon-pencil");
-                }
+                formIcon.setContent(iconPencil);
+                formIcon.getStyleClass().add("icon-pencil");
                 break;
 
             case MODE_CREATE:
@@ -206,10 +183,8 @@ public class UserFormController {
                 setVisibleManaged(roleCombo, true);
                 roleCombo.setValue(ROLE_USER);
 
-                if (formIcon != null) {
-                    formIcon.setContent(iconPlus);
-                    formIcon.getStyleClass().add("icon-plus");
-                }
+                formIcon.setContent(iconPlus);
+                formIcon.getStyleClass().add("icon-plus");
                 break;
 
             default:
@@ -218,27 +193,22 @@ public class UserFormController {
                 setVisibleManaged(backButton, true);
                 setVisibleManaged(editButton, true);
                 setVisibleManaged(deleteButton, true);
-                if (formIcon != null) {
-                    formIcon.setContent(iconEye);
-                    formIcon.getStyleClass().add("icon-eye");
-                }
+                formIcon.setContent(iconEye);
+                formIcon.getStyleClass().add("icon-eye");
                 break;
         }
 
-        if (editButton != null) {
-            editButton.setOnAction(e -> {
-                if (currentUser != null) {
-                    setUserData(currentUser, MODE_EDIT);
-                }
-            });
-        }
-        if (deleteButton != null) {
-            deleteButton.setOnAction(e -> {
-                if (currentUser != null) {
-                    onDelete();
-                }
-            });
-        }
+        editButton.setOnAction(e -> {
+            if (currentUser != null) {
+                setUserData(currentUser, MODE_EDIT);
+            }
+        });
+
+        deleteButton.setOnAction(e -> {
+            if (currentUser != null) {
+                onDelete();
+            }
+        });
     }
 
     /**
@@ -247,35 +217,35 @@ public class UserFormController {
      * @param editable true per permetre edicio, false per bloquejar
      */
     private void setFieldsEditable(boolean editable) {
-        if (nickField != null) nickField.setEditable(editable);
-        if (nifField != null) nifField.setEditable(editable);
-        if (nomField != null) nomField.setEditable(editable);
-        if (cognom1Field != null) cognom1Field.setEditable(editable);
-        if (cognom2Field != null) cognom2Field.setEditable(editable);
-        if (localitatField != null) localitatField.setEditable(editable);
-        if (provinciaField != null) provinciaField.setEditable(editable);
-        if (carrerField != null) carrerField.setEditable(editable);
-        if (cpField != null) cpField.setEditable(editable);
-        if (tlfField != null) tlfField.setEditable(editable);
-        if (emailField != null) emailField.setEditable(editable);
-        if (passwordField != null) passwordField.setEditable(editable);
-        if (passwordConfirmField != null) passwordConfirmField.setEditable(editable);
+        nickField.setEditable(editable);
+        nifField.setEditable(editable);
+        nomField.setEditable(editable);
+        cognom1Field.setEditable(editable);
+        cognom2Field.setEditable(editable);
+        localitatField.setEditable(editable);
+        provinciaField.setEditable(editable);
+        carrerField.setEditable(editable);
+        cpField.setEditable(editable);
+        tlfField.setEditable(editable);
+        emailField.setEditable(editable);
+        passwordField.setEditable(editable);
+        passwordConfirmField.setEditable(editable);
 
         boolean disable = !editable;
-        if (nickField != null) nickField.setDisable(disable);
-        if (nifField != null) nifField.setDisable(disable);
-        if (nomField != null) nomField.setDisable(disable);
-        if (cognom1Field != null) cognom1Field.setDisable(disable);
-        if (cognom2Field != null) cognom2Field.setDisable(disable);
-        if (localitatField != null) localitatField.setDisable(disable);
-        if (provinciaField != null) provinciaField.setDisable(disable);
-        if (carrerField != null) carrerField.setDisable(disable);
-        if (cpField != null) cpField.setDisable(disable);
-        if (tlfField != null) tlfField.setDisable(disable);
-        if (emailField != null) emailField.setDisable(disable);
-        if (passwordField != null) passwordField.setDisable(disable);
-        if (passwordConfirmField != null) passwordConfirmField.setDisable(disable);
-        if (roleCombo != null) roleCombo.setDisable(disable);
+        nickField.setDisable(disable);
+        nifField.setDisable(disable);
+        nomField.setDisable(disable);
+        cognom1Field.setDisable(disable);
+        cognom2Field.setDisable(disable);
+        localitatField.setDisable(disable);
+        provinciaField.setDisable(disable);
+        carrerField.setDisable(disable);
+        cpField.setDisable(disable);
+        tlfField.setDisable(disable);
+        emailField.setDisable(disable);
+        passwordField.setDisable(disable);
+        passwordConfirmField.setDisable(disable);
+        roleCombo.setDisable(disable);
     }
 
     /**
@@ -300,46 +270,44 @@ public class UserFormController {
      * @param user usuari amb les dades a mostrar
      */
     private void populateFormWithUserData(User user) {
-        if (userIdLabel != null) userIdLabel.setText(user.getId() != null ? user.getId().toString() : "");
-        if (rolLabel != null) rolLabel.setText(user.getRol() == 2 ? ROLE_ADMIN : ROLE_USER);
+        userIdLabel.setText(user.getId() != null ? user.getId().toString() : "");
+        rolLabel.setText(user.getRol() == 2 ? ROLE_ADMIN : ROLE_USER);
 
-        if (nickField != null) nickField.setText(safeGet(user.getNick()));
-        if (nifField != null) nifField.setText(safeGet(user.getNif()));
-        if (nomField != null) nomField.setText(safeGet(user.getNom()));
-        if (cognom1Field != null) cognom1Field.setText(safeGet(user.getCognom1()));
-        if (cognom2Field != null) cognom2Field.setText(safeGet(user.getCognom2()));
-        if (localitatField != null) localitatField.setText(safeGet(user.getLocalitat()));
-        if (provinciaField != null) provinciaField.setText(safeGet(user.getProvincia()));
-        if (carrerField != null) carrerField.setText(safeGet(user.getCarrer()));
-        if (cpField != null) cpField.setText(safeGet(user.getCp()));
-        if (tlfField != null) tlfField.setText(safeGet(user.getTlf()));
-        if (emailField != null) emailField.setText(safeGet(user.getEmail()));
+        nickField.setText(safeGet(user.getNick()));
+        nifField.setText(safeGet(user.getNif()));
+        nomField.setText(safeGet(user.getNom()));
+        cognom1Field.setText(safeGet(user.getCognom1()));
+        cognom2Field.setText(safeGet(user.getCognom2()));
+        localitatField.setText(safeGet(user.getLocalitat()));
+        provinciaField.setText(safeGet(user.getProvincia()));
+        carrerField.setText(safeGet(user.getCarrer()));
+        cpField.setText(safeGet(user.getCp()));
+        tlfField.setText(safeGet(user.getTlf()));
+        emailField.setText(safeGet(user.getEmail()));
 
-        if (roleCombo != null) {
-            roleCombo.setValue(user.getRol() == 2 ? ROLE_ADMIN : ROLE_USER);
-        }
+        roleCombo.setValue(user.getRol() == 2 ? ROLE_ADMIN : ROLE_USER);
 
-        if (passwordField != null) passwordField.setText("");
-        if (passwordConfirmField != null) passwordConfirmField.setText("");
+        passwordField.setText("");
+        passwordConfirmField.setText("");
     }
 
     /**
      * Neteja tots els camps del formulari.
      */
     private void clearForm() {
-        if (nickField != null) nickField.setText("");
-        if (nifField != null) nifField.setText("");
-        if (nomField != null) nomField.setText("");
-        if (cognom1Field != null) cognom1Field.setText("");
-        if (cognom2Field != null) cognom2Field.setText("");
-        if (localitatField != null) localitatField.setText("");
-        if (provinciaField != null) provinciaField.setText("");
-        if (carrerField != null) carrerField.setText("");
-        if (cpField != null) cpField.setText("");
-        if (tlfField != null) tlfField.setText("");
-        if (emailField != null) emailField.setText("");
-        if (passwordField != null) passwordField.setText("");
-        if (passwordConfirmField != null) passwordConfirmField.setText("");
+        nickField.setText("");
+        nifField.setText("");
+        nomField.setText("");
+        cognom1Field.setText("");
+        cognom2Field.setText("");
+        localitatField.setText("");
+        provinciaField.setText("");
+        carrerField.setText("");
+        cpField.setText("");
+        tlfField.setText("");
+        emailField.setText("");
+        passwordField.setText("");
+        passwordConfirmField.setText("");
     }
 
     /**
@@ -445,8 +413,8 @@ public class UserFormController {
         if (emailField.getText().trim().isEmpty()) errorMessage.append("El email és obligatori\n");
 
         if (MODE_CREATE.equals(mode) || MODE_EDIT.equals(mode)) {
-            if (passwordField.getText().trim().isEmpty()) errorMessage.append("La contrasenyaa és obligatoria\n");
-            if (passwordConfirmField.getText().trim().isEmpty()) errorMessage.append("Torna a escriue la contraseña\n");
+            if (passwordField.getText().trim().isEmpty()) errorMessage.append("La contrasenya és obligatoria\n");
+            if (passwordConfirmField.getText().trim().isEmpty()) errorMessage.append("Torna a escriure la contrasenya\n");
         }
 
         String nick = nickField.getText().trim();
@@ -456,12 +424,12 @@ public class UserFormController {
         String cp = cpField.getText().trim();
         String pwd = passwordField.getText();
 
-        if (nick.length() > 10) errorMessage.append("El nick ha de tenir màxim 10 caràcters\n");
-        if (nif.length() != 9) errorMessage.append("El NIF ha de tenir 9 caràcters\n");
-        if (tlf.length() != 9) errorMessage.append("El telèfon ha de tenir 9 dígits\n");
-        if (cp.length() != 5) errorMessage.append("El codi postal ha de tenir 5 dígits\n");
+        if (nick.length() > 10) errorMessage.append("El nick ha de tenir maxim 10 caracters\n");
+        if (nif.length() != 9) errorMessage.append("El NIF ha de tenir 9 caracters\n");
+        if (tlf.length() != 9) errorMessage.append("El telèfon ha de tenir 9 digits\n");
+        if (cp.length() != 5) errorMessage.append("El codi postal ha de tenir 5 digits\n");
 
-        if (!email.contains("@") || email.startsWith("@") || email.endsWith("@")) errorMessage.append("Formato de email inválido\n");
+        if (!email.contains("@") || email.startsWith("@") || email.endsWith("@")) errorMessage.append("Format de email invalid\n");
 
         if (!pwd.isEmpty() && !pwd.equals(passwordConfirmField.getText())) {
             errorMessage.append("Les contrasenyes no coincideixen\n");
@@ -495,7 +463,7 @@ public class UserFormController {
         user.setEmail(emailField.getText().trim());
         user.setPassword(passwordField.getText());
 
-        if (MODE_CREATE.equals(mode) && roleCombo != null && roleCombo.isVisible()) {
+        if (MODE_CREATE.equals(mode) && roleCombo.isVisible()) {
             String val = roleCombo.getValue();
             if (ROLE_ADMIN.equals(val)) {
                 user.setRol(2);
@@ -524,18 +492,18 @@ public class UserFormController {
             }
         };
 
-        createTask.setOnSucceeded(e -> showSuccessAndNavigate("Usuario creado correctamente"));
+        createTask.setOnSucceeded(e -> showSuccessAndNavigate("Usuario creat correctament"));
 
         createTask.setOnFailed(e -> {
             Throwable exception = createTask.getException();
             String errorMsg = "Error al crear usuari: " +
-                    (exception instanceof ApiException ? exception.getMessage() : "Error de conexió");
+                    (exception instanceof ApiException ? exception.getMessage() : "Error de connexió");
             showError(errorMsg);
             LOGGER.log(Level.WARNING, "Error al crear usuari", exception);
         });
 
-        setVisibleManaged(saveButton, false); // evitar doble pulsación
-        if (errorLabel != null) errorLabel.setVisible(false);
+        setVisibleManaged(saveButton, false);
+        errorLabel.setVisible(false);
         ApiClient.BG_EXEC.submit(createTask);
     }
 
@@ -561,14 +529,14 @@ public class UserFormController {
 
         updateTask.setOnFailed(e -> {
             Throwable exception = updateTask.getException();
-            String errorMsg = "Error actualizant usuari: " +
-                    (exception instanceof ApiException ? exception.getMessage() : "Error de conexió");
+            String errorMsg = "Error actualitzant usuari: " +
+                    (exception instanceof ApiException ? exception.getMessage() : "Error de connexió");
             showError(errorMsg);
-            LOGGER.log(Level.WARNING, "Error actualizant usuari", exception);
+            LOGGER.log(Level.WARNING, "Error actualitzant usuari", exception);
         });
 
         setVisibleManaged(saveButton, false);
-        if (errorLabel != null) errorLabel.setVisible(false);
+        errorLabel.setVisible(false);
         ApiClient.BG_EXEC.submit(updateTask);
     }
 
@@ -628,6 +596,6 @@ public class UserFormController {
         errorLabel.getStyleClass().removeAll("success-label");
         errorLabel.getStyleClass().add("error-label");
         errorLabel.setVisible(true);
-        if (saveButton != null) saveButton.setDisable(false);
+        saveButton.setDisable(false);
     }
 }
