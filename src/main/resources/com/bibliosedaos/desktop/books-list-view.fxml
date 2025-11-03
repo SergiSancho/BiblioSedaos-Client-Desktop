@@ -56,10 +56,10 @@
 
                 <TableView fx:id="booksTable" styleClass="data-table" VBox.vgrow="ALWAYS" fixedCellSize="36">
                     <columns>
-                        <TableColumn fx:id="idColumn" text="ID" styleClass="id-column" prefWidth="45"/>
-                        <TableColumn fx:id="titolColumn" text="Títol" minWidth="260"/>
-                        <TableColumn fx:id="autorColumn" text="Autor" minWidth="160"/>
-                        <TableColumn fx:id="actionsColumn" text="Accions" styleClass="actions-column" minWidth="267"/>
+                        <TableColumn fx:id="idColumn" text="ID" styleClass="id-column" prefWidth="30"/>
+                        <TableColumn fx:id="titolColumn" text="Títol" minWidth="230"/>
+                        <TableColumn fx:id="autorColumn" text="Autor" minWidth="80"/>
+                        <TableColumn fx:id="actionsColumn" text="Accions" styleClass="actions-column" minWidth="307"/>
                     </columns>
                 </TableView>
 

@@ -419,19 +419,19 @@ public class UserFormController {
 
         String nick = nickField.getText().trim();
         String nif = nifField.getText().trim();
-        String tlf = tlfField.getText().trim();
+        String telefon = tlfField.getText().trim();
         String email = emailField.getText().trim();
-        String cp = cpField.getText().trim();
-        String pwd = passwordField.getText();
+        String codiPostal = cpField.getText().trim();
+        String password = passwordField.getText();
 
         if (nick.length() > 10) errorMessage.append("El nick ha de tenir maxim 10 caracters\n");
         if (nif.length() != 9) errorMessage.append("El NIF ha de tenir 9 caracters\n");
-        if (tlf.length() != 9) errorMessage.append("El telèfon ha de tenir 9 digits\n");
-        if (cp.length() != 5) errorMessage.append("El codi postal ha de tenir 5 digits\n");
+        if (telefon.length() != 9) errorMessage.append("El telèfon ha de tenir 9 digits\n");
+        if (codiPostal.length() != 5) errorMessage.append("El codi postal ha de tenir 5 digits\n");
 
         if (!email.contains("@") || email.startsWith("@") || email.endsWith("@")) errorMessage.append("Format de email invalid\n");
 
-        if (!pwd.isEmpty() && !pwd.equals(passwordConfirmField.getText())) {
+        if (!password.isEmpty() && !password.equals(passwordConfirmField.getText())) {
             errorMessage.append("Les contrasenyes no coincideixen\n");
         }
 

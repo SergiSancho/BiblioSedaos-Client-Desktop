@@ -200,8 +200,6 @@
 .view-btn:hover, .edit-btn:hover, .delete-btn:hover, .exemplar-btn:hover { -fx-background-color: rgba(233,30,99,0.12); }
 .view-btn, .edit-btn, .delete-btn, .exemplar-btn { -fx-text-fill: #5e0f85; -fx-border-color: #5e0f85; }
 
-.actions-column .table-cell { -fx-alignment: CENTER; -fx-padding: 6 12; }
-
 .primary-btn {
     -fx-background-color: linear-gradient(#7b1fa2, #5e0f85);
     -fx-text-fill: white;

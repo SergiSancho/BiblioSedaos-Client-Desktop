@@ -5,6 +5,7 @@ import com.bibliosedaos.desktop.api.ApiException;
 import com.bibliosedaos.desktop.model.Autor;
 import com.bibliosedaos.desktop.model.Exemplar;
 import com.bibliosedaos.desktop.model.Llibre;
+import com.bibliosedaos.desktop.security.SessionStore;
 import com.bibliosedaos.desktop.service.AutorService;
 import com.bibliosedaos.desktop.service.ExemplarService;
 import com.bibliosedaos.desktop.service.LlibreService;
@@ -42,6 +43,7 @@ public class BookFormController {
 
     private static final String MODE_CREATE = "CREATE";
     private static final String MODE_VIEW = "VIEW";
+    private static final String MODE_EDIT = "EDIT";
     private static final String MODE_ADD_EXEMPLAR = "ADD_EXEMPLAR";
     private static final String RESERVAT_LLIURE = "lliure";
     private static final String DISPONIBLE = "Disponible";
@@ -231,6 +233,40 @@ public class BookFormController {
                 exemplarsTable.getItems().clear();
                 break;
 
+            case MODE_EDIT:
+                applyIconAndTitle(MODE_EDIT);
+                setFieldsEditable(true);
+                autorCombo.setVisible(true);
+                autorCombo.setManaged(true);
+                autorLabel.setVisible(false);
+                autorLabel.setManaged(false);
+                addAutorButton.setVisible(true);
+                addAutorButton.setManaged(true);
+
+                saveButton.setVisible(true);
+                saveButton.setManaged(true);
+                saveButton.setText("Actualitzar Llibre");
+
+                exemplarButton.setDisable(false);
+                exemplarButton.setVisible(true);
+                exemplarButton.setManaged(true);
+                exemplarButton.setText("Afegir Exemplar");
+
+                backButton.setText("Cancel·lar");
+
+                llocLabel.setVisible(true);
+                llocLabel.setManaged(true);
+                estatLabel.setVisible(true);
+                estatLabel.setManaged(true);
+                exemplarLlocField.setVisible(true);
+                exemplarLlocField.setManaged(true);
+                exemplarEstatLabel.setVisible(true);
+                exemplarEstatLabel.setManaged(true);
+                setExemplarActionsColumnVisible(true);
+
+                if (currentBook != null && currentBook.getId() != null) loadExemplarsForBook(currentBook.getId());
+                break;
+
             case MODE_ADD_EXEMPLAR:
                 applyIconAndTitle(MODE_ADD_EXEMPLAR);
                 setFieldsEditable(false);
@@ -339,6 +375,7 @@ public class BookFormController {
     private void applyIconAndTitle(String currentMode) {
         final String iconEye = "M12.015 7c4.751 0 8.063 3.012 9.504 4.636-1.401 1.837-4.713 5.364-9.504 5.364-4.42 0-7.93-3.536-9.478-5.407 1.493-1.647 4.817-4.593 9.478-4.593zm0-2c-7.569 0-12.015 6.551-12.015 6.551s4.835 7.449 12.015 7.449c7.733 0 11.985-7.449 11.985-7.449s-4.291-6.551-11.985-6.551zm-.015 3c-2.21 0-4 1.791-4 4s1.79 4 4 4c2.209 0 4-1.791 4-4s-1.791-4-4-4zm-.004 3.999c-.564.564-1.479.564-2.044 0s-.565-1.48 0-2.044c.564-.564 1.479-.564 2.044 0s.565 1.479 0 2.044z";
         final String iconPlus = "M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z";
+        final String iconPencil = "M14.078 4.232l-12.64 12.639-1.438 7.129 7.127-1.438 12.641-12.64-5.69-5.69zm-10.369 14.893l-.85-.85 11.141-11.125.849.849-11.14 11.126zm2.008 2.008l-.85-.85 11.141-11.125.85.850-11.141 11.125zm18.283-15.444l-2.816 2.818-5.691-5.691 2.816-2.816 5.691 5.689z";
 
         switch (currentMode) {
             case MODE_VIEW:
@@ -348,6 +385,10 @@ public class BookFormController {
             case MODE_CREATE:
                 formIconSet(iconPlus, ICON_PLUS);
                 titleLabel.setText("Crear Nou Llibre");
+                break;
+            case MODE_EDIT:
+                formIconSet(iconPencil, "icon-pencil");
+                titleLabel.setText("Editar Llibre");
                 break;
             case MODE_ADD_EXEMPLAR:
                 formIconSet(iconPlus, ICON_PLUS);
@@ -549,11 +590,11 @@ public class BookFormController {
      */
     @FXML
     private void onAddAutor() {
-        TextInputDialog dlg = new TextInputDialog();
-        dlg.setTitle("Afegir Autor");
-        dlg.setHeaderText("Crea un autor nou");
-        dlg.setContentText("Nom:");
-        dlg.showAndWait().ifPresent(name -> {
+        TextInputDialog inputDialog = new TextInputDialog();
+        inputDialog.setTitle("Afegir Autor");
+        inputDialog.setHeaderText("Crea un autor nou");
+        inputDialog.setContentText("Nom:");
+        inputDialog.showAndWait().ifPresent(name -> {
             String trimmedName = name.trim();
             if (trimmedName.isEmpty()) return;
             createAutor(trimmedName);
@@ -597,15 +638,15 @@ public class BookFormController {
             return;
         }
 
-        Exemplar ex = new Exemplar();
-        ex.setLloc(lloc);
-        ex.setReservat(RESERVAT_LLIURE);
+        Exemplar exemplar = new Exemplar();
+        exemplar.setLloc(lloc);
+        exemplar.setReservat(RESERVAT_LLIURE);
         Llibre ref = new Llibre();
         ref.setId(currentBook.getId());
-        ex.setLlibre(ref);
+        exemplar.setLlibre(ref);
 
         Task<Exemplar> task = new Task<>() {
-            @Override protected Exemplar call() throws Exception { return exemplarService.createExemplar(ex); }
+            @Override protected Exemplar call() throws Exception { return exemplarService.createExemplar(exemplar); }
         };
 
         task.setOnSucceeded(e -> {
@@ -628,14 +669,9 @@ public class BookFormController {
      */
     @FXML
     private void onSave() {
-        if (!validateBook()) return;
+        if (!validateFields()) return;
 
-        Llibre book = new Llibre();
-        book.setIsbn(isbnField.getText().trim());
-        book.setTitol(titolField.getText().trim());
-        book.setPagines(Integer.parseInt(paginesField.getText().trim()));
-        book.setEditorial(editorialField.getText().trim());
-        book.setAutor(autorCombo.getValue());
+        Llibre book = createBookFromForm();
 
         if (MODE_CREATE.equals(mode)) {
             Task<Llibre> task = new Task<>() {
@@ -655,8 +691,29 @@ public class BookFormController {
                 showError("Error creant llibre: " + (ex != null ? ex.getMessage() : ERROR_UNKNOWN));
             });
             ApiClient.BG_EXEC.submit(task);
+        } else if (MODE_EDIT.equals(mode)) {
+            Task<Llibre> task = new Task<>() {
+                @Override protected Llibre call() throws Exception {
+                    return llibreService.updateBook(currentBook.getId(), book);
+                }
+            };
+
+            task.setOnSucceeded(e -> {
+                Llibre updated = task.getValue();
+                currentBook = updated;
+                showInfo("Llibre actualitzat correctament.");
+                setBookData(updated, MODE_VIEW);
+            });
+
+            task.setOnFailed(e -> {
+                Throwable ex = task.getException();
+                LOGGER.log(Level.WARNING, "Error actualitzant llibre", ex);
+                showError("Error actualitzant llibre: " + (ex != null ? ex.getMessage() : ERROR_UNKNOWN));
+            });
+
+            ApiClient.BG_EXEC.submit(task);
         } else {
-            showError("Operació no disponible: l'edició de llibres s'ha deshabilitat.");
+            showError("Operació no disponible.");
         }
     }
 
@@ -665,25 +722,52 @@ public class BookFormController {
      *
      * @return true si tots els camps son valids, false altrament
      */
-    private boolean validateBook() {
-        StringBuilder err = new StringBuilder();
-        if (isbnField.getText().trim().isEmpty()) err.append("El ISBN és obligatori\n");
-        if (titolField.getText().trim().isEmpty()) err.append("El títol és obligatori\n");
+    private boolean validateFields() {
+        StringBuilder errorMessage = new StringBuilder();
+        if (isbnField.getText().trim().isEmpty()) errorMessage.append("El ISBN és obligatori\n");
+        if (titolField.getText().trim().isEmpty()) errorMessage.append("El títol és obligatori\n");
         try {
-            int p = Integer.parseInt(paginesField.getText().trim());
-            if (p < 1) err.append("Les pàgines han de ser >= 1\n");
-        } catch (NumberFormatException e) { err.append("Les pàgines han de ser numèriques\n"); }
-        if (editorialField.getText().trim().isEmpty()) err.append("L'editorial és obligatòria\n");
-        if (autorCombo.getValue() == null) err.append("Selecciona un autor o crea-ne un nou\n");
+            int paginas = Integer.parseInt(paginesField.getText().trim());
+            if (paginas < 1) errorMessage.append("Les pàgines han de ser >= 1\n");
+        } catch (NumberFormatException e) { errorMessage.append("Les pàgines han de ser numèriques\n"); }
+        if (editorialField.getText().trim().isEmpty()) errorMessage.append("L'editorial és obligatòria\n");
+        if (autorCombo.getValue() == null) errorMessage.append("Selecciona un autor o crea-ne un nou\n");
 
-        if (!err.isEmpty()) { showError(err.toString().trim()); return false; }
+        if (!errorMessage.isEmpty()) { showError(errorMessage.toString().trim()); return false; }
         return true;
+    }
+
+    /**
+     * Crea un objecte Llibre amb les dades del formulari.
+     *
+     * @return objecte Llibre amb les dades del formulari
+     */
+    private Llibre createBookFromForm() {
+        Llibre book = new Llibre();
+        book.setIsbn(isbnField.getText().trim());
+        book.setTitol(titolField.getText().trim());
+        book.setPagines(Integer.parseInt(paginesField.getText().trim()));
+        book.setEditorial(editorialField.getText().trim());
+        book.setAutor(autorCombo.getValue());
+        return book;
     }
 
     /**
      * Gestiona l'accio de tornar a la llista de llibres.
      */
-    @FXML private void onBack() { navigator.showMainView(BOOKS_LIST_PATH); }
+    @FXML
+    private void onBack() {
+        try {
+            int rol = SessionStore.getInstance().getRol();
+            if (rol == 2) {
+                navigator.showMainView(BOOKS_LIST_PATH);
+            } else {
+                navigator.showMainView("/com/bibliosedaos/desktop/books-browse-view.fxml");
+            }
+        } catch (Exception ex) {
+            navigator.showMainView("/com/bibliosedaos/desktop/welcome-view.fxml");
+        }
+    }
 
     /**
      * Mostra un missatge d'error.
@@ -692,8 +776,8 @@ public class BookFormController {
      */
     private void showError(String message) {
         Platform.runLater(() -> {
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setHeaderText(null); a.setContentText(message); a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null); alert.setContentText(message); alert.showAndWait();
         });
     }
 
@@ -704,8 +788,8 @@ public class BookFormController {
      */
     private void showInfo(String message) {
         Platform.runLater(() -> {
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setHeaderText(null); a.setContentText(message); a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null); alert.setContentText(message); alert.showAndWait();
         });
     }
 }

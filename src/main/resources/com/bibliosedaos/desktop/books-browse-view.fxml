@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.bibliosedaos.desktop.controller.BooksBrowseController"
+            prefWidth="1200" prefHeight="800"
+            styleClass="root">
+
+    <top>
+        <VBox spacing="8" styleClass="header-section">
+            <padding>
+                <Insets top="20" right="24" bottom="16" left="24"/>
+            </padding>
+
+            <HBox alignment="CENTER" spacing="18">
+                <SVGPath styleClass="header-icon" content="M13 8h-8v-1h8v1zm0 2h-8v-1h8v1zm-3 2h-5v-1h5v1zm11.172 12l-7.387-7.387c-1.388.874-3.024 1.387-4.785 1.387-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9c0 1.761-.514 3.398-1.387 4.785l7.387 7.387-2.828 2.828zm-12.172-8c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z"/>
+                <Label text="Cerca de Llibres" styleClass="header-title"/>
+            </HBox>
+
+            <VBox spacing="8" styleClass="search-container" alignment="CENTER_LEFT">
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="Cercar en llibres:" styleClass="search-type-combo" />
+                    <ComboBox fx:id="searchFieldCombo" prefWidth="140" prefHeight="32" promptText="Cercar per..."/>
+                    <HBox styleClass="search-field-container" alignment="CENTER_LEFT">
+                        <SVGPath styleClass="search-icon-svg" content="M23.111 20.058l-4.977-4.977c.965-1.52 1.523-3.322 1.523-5.251 0-5.42-4.409-9.83-9.829-9.83-5.42 0-9.828 4.41-9.828 9.83s4.408 9.83 9.829 9.83c1.834 0 3.552-.505 5.022-1.383l5.021 5.021c2.144 2.141 5.384-1.096 3.239-3.24zm-20.064-10.228c0-3.739 3.043-6.782 6.782-6.782s6.782 3.042 6.782 6.782-3.043 6.782-6.782 6.782-6.782-3.043-6.782-6.782zm2.01-1.764c1.984-4.599 8.664-4.066 9.922.749-2.534-2.974-6.993-3.294-9.922-.749z"/>
+                        <TextField fx:id="searchField" promptText="Introdueix text per cercar..." styleClass="search-field-integrated"/>
+                    </HBox>
+
+                    <Region prefWidth="12"/>
+
+                    <CheckBox fx:id="allBooksToggle" onAction="#onAllBooksToggle"
+                              text="Veure tots els llibres">
+                        <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
+                    </CheckBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="Cercar en exemplars disponibles:" styleClass="search-type-combo" />
+
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="available-search-container">
+                        <ComboBox fx:id="availableSearchCombo" prefWidth="120" promptText="Camp"/>
+                        <HBox styleClass="search-field-container" alignment="CENTER_LEFT">
+                            <TextField fx:id="availableSearchField" promptText="Introdueix títol o autor..." styleClass="search-field-integrated"/>
+                            <Button fx:id="availableSearchButton" onAction="#onAvailableSearch" styleClass="search-id-button">
+                                <graphic>
+                                    <SVGPath styleClass="search-icon-button" content="M23.111 20.058l-4.977-4.977c.965-1.52 1.523-3.322 1.523-5.251 0-5.42-4.409-9.83-9.829-9.83-5.42 0-9.828 4.41-9.828 9.83s4.408 9.83 9.829 9.83c1.834 0 3.552-.505 5.022-1.383l5.021 5.021c2.144 2.141 5.384-1.096 3.239-3.24zm-20.064-10.228c0-3.739 3.043-6.782 6.782-6.782s6.782 3.042 6.782 6.782-3.043 6.782-6.782 6.782-6.782-3.043-6.782-6.782zm2.01-1.764c1.984-4.599 8.664-4.066 9.922.749-2.534-2.974-6.993-3.294-9.922-.749z"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </HBox>
+
+                    <Region prefWidth="12"/>
+
+                    <CheckBox fx:id="onlyAvailableToggle" onAction="#onToggleOnlyAvailable"
+                              text="Veure només exemplars disponibles">
+                        <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
+                    </CheckBox>
+
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="main-scroll-pane">
+            <VBox spacing="8" styleClass="table-container">
+                <padding><Insets top="8" right="24" bottom="8" left="24"/></padding>
+
+                <TableView fx:id="browseTable" styleClass="data-table" VBox.vgrow="ALWAYS" fixedCellSize="36">
+                    <placeholder>
+                        <Label text="No hi ha cap entrada"/>
+                    </placeholder>
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" styleClass="id-column" prefWidth="60"/>
+                        <TableColumn fx:id="titolColumn" text="Títol" minWidth="240"/>
+                        <TableColumn fx:id="autorColumn" text="Autor" minWidth="140"/>
+                        <TableColumn fx:id="llocColumn" text="Lloc" minWidth="120"/>
+                        <TableColumn fx:id="reservatColumn" text="Estat" minWidth="50"/>
+                        <TableColumn fx:id="actionsColumn" text="Accions" styleClass="actions-column" minWidth="140"/>
+                    </columns>
+                </TableView>
+
+                <HBox alignment="CENTER" spacing="16" styleClass="pagination-container">
+                    <Button fx:id="prevPageButton" onAction="#onPreviousPage" styleClass="pagination-btn" text="◀ Anterior"/>
+                    <Label fx:id="pageInfoLabel" styleClass="page-info" text="Pàgina 1 de 1"/>
+                    <Button fx:id="nextPageButton" onAction="#onNextPage" styleClass="pagination-btn" text="Següent ▶"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

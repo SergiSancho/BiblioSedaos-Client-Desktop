@@ -114,9 +114,9 @@ public class User {
      * @return "Admin" o "Usuari" o cadena buida si no hi ha rol
      */
     public String getRolLabel() {
-        Integer r = getRol();
-        if (r == null) return "";
-        return r == 2 ? "Admin" : "Usuari";
+        Integer rol = getRol();
+        if (rol == null) return "";
+        return rol == 2 ? "Admin" : "Usuari";
     }
 
     /** @param rol rol de l'usuari (1=usuari, 2=admin) */

@@ -26,9 +26,11 @@ import java.util.logging.Logger;
 
 /**
  * Controlador per a la llista de llibres.
- *
  * Gestiona la visualitzacio, cerca i navegacio entre llibres del sistema.
  * Implementa paginacio, cerca per diversos camps i gestio d'exemplars.
+ *
+ * Assistencia d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
+ * S'ha revisat i adaptat manualment per l'autor. Veure llegeixme.pdf per detalls.
  *
  * @author Sergio
  * @version 1.0-SNAPSHOT
@@ -124,8 +126,8 @@ public class BooksListController {
         idColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
         titolColumn.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("titol"));
         autorColumn.setCellValueFactory(cell -> {
-            Autor a = cell.getValue().getAutor();
-            return new ReadOnlyStringWrapper(a != null ? a.getNom() : "");
+            Autor autor = cell.getValue().getAutor();
+            return new ReadOnlyStringWrapper(autor != null ? autor.getNom() : "");
         });
     }
 
@@ -142,50 +144,7 @@ public class BooksListController {
      * @return TableCell configurada amb botons d'accio
      */
     private TableCell<Llibre, Void> createActionsTableCell() {
-        return new TableCell<>() {
-            private final Button viewBtn = createActionButton(
-                    "M12.015 7c4.751 0 8.063 3.012 9.504 4.636-1.401 1.837-4.713 5.364-9.504 5.364-4.42 0-7.93-3.536-9.478-5.407 1.493-1.647 4.817-4.593 9.478-4.593zm0-2c-7.569 0-12.015 6.551-12.015 6.551s4.835 7.449 12.015 7.449c7.733 0 11.985-7.449 11.985-7.449s-4.291-6.551-11.985-6.551zm-.015 3c-2.21 0-4 1.791-4 4s1.79 4 4 4c2.209 0 4-1.791 4-4s-1.791-4-4-4zm-.004 3.999c-.564.564-1.479.564-2.044 0s-.565-1.48 0-2.044c.564-.564 1.479-.564 2.044 0s.565 1.479 0 2.044z",
-                    "view-btn", "Veure detalls", "Veure");
-
-            private final Button addExBtn = createActionButton(
-                    "M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z",
-                    "exemplar-btn", "Afegir exemplar", "Exemplar");
-
-            private final Button delBtn = createActionButton(
-                    "M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z",
-                    "delete-btn", "Eliminar llibre", "Eliminar");
-
-            private final HBox box = new HBox(6, viewBtn, addExBtn, delBtn);
-
-            {
-                viewBtn.setOnAction(e -> {
-                    Llibre current = getCurrent();
-                    if (current != null) viewBook(current);
-                });
-                addExBtn.setOnAction(e -> {
-                    Llibre current = getCurrent();
-                    if (current != null) {
-                        navigator.showMainView(BOOK_FORM_VIEW_PATH,
-                                (BookFormController c) -> c.setBookData(current, "ADD_EXEMPLAR"));
-                    }
-                });
-                delBtn.setOnAction(e -> {
-                    Llibre current = getCurrent();
-                    if (current != null) deleteBook(current);
-                });
-            }
-
-            private Llibre getCurrent() {
-                int idx = getIndex();
-                return (idx >= 0 && idx < getTableView().getItems().size()) ? getTableView().getItems().get(idx) : null;
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
-            }
-        };
+        return new ActionsTableCell();
     }
 
     /**
@@ -210,6 +169,80 @@ public class BooksListController {
     }
 
     /**
+     * Cel·la de la taula que mostra els botons d'accio (Veure / Afegir Exemplar / Eliminar)
+     * per a la fila actual i gestiona la creacio dels botons i els seus handlers.
+     */
+    private class ActionsTableCell extends TableCell<Llibre, Void> {
+        private final Button viewBtn;
+        private final Button editBtn;
+        private final Button addExBtn;
+        private final Button delBtn;
+        private final HBox box;
+
+        /**
+         * Constructor: crea botons, contenidor i assigna handlers.
+         */
+        ActionsTableCell() {
+            viewBtn = createActionButton(
+                    "M12.015 7c4.751 0 8.063 3.012 9.504 4.636-1.401 1.837-4.713 5.364-9.504 5.364-4.42 0-7.93-3.536-9.478-5.407 1.493-1.647 4.817-4.593 9.478-4.593zm0-2c-7.569 0-12.015 6.551-12.015 6.551s4.835 7.449 12.015 7.449c7.733 0 11.985-7.449 11.985-7.449s-4.291-6.551-11.985-6.551zm-.015 3c-2.21 0-4 1.791-4 4s1.79 4 4 4c2.209 0 4-1.791 4-4s-1.791-4-4-4zm-.004 3.999c-.564.564-1.479.564-2.044 0s-.565-1.48 0-2.044c.564-.564 1.479-.564 2.044 0s.565 1.479 0 2.044z",
+                    "view-btn", "Veure detalls", "Veure");
+
+            editBtn = createActionButton(
+                    "M14.078 4.232l-12.64 12.639-1.438 7.129 7.127-1.438 12.641-12.64-5.69-5.69zm-10.369 14.893l-.85-.85 11.141-11.125.849.849-11.14 11.126zm2.008 2.008l-.85-.85 11.141-11.125.85.85-11.141 11.125zm18.283-15.444l-2.816 2.818-5.691-5.691 2.816-2.816 5.691 5.689z",
+                    "edit-btn", "Editar llibre", "Editar"
+            );
+
+            addExBtn = createActionButton(
+                    "M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z",
+                    "exemplar-btn", "Afegir exemplar", "Exemplar");
+
+            delBtn = createActionButton(
+                    "M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z",
+                    "delete-btn", "Eliminar llibre", "Eliminar");
+
+            box = new HBox(6, viewBtn, addExBtn, editBtn, delBtn);
+
+            configureButtonActions();
+        }
+
+        /**
+         * Configura les accions dels botons d'accio.
+         */
+        private void configureButtonActions() {
+            viewBtn.setOnAction(e -> {
+                Llibre current = getCurrentItem();
+                if (current != null) viewBook(current);
+            });
+            editBtn.setOnAction(e -> {
+                Llibre current = getCurrentItem();
+                if (current != null) editBook(current);
+            });
+            addExBtn.setOnAction(e -> {
+                Llibre current = getCurrentItem();
+                if (current != null) {
+                    navigator.showMainView(BOOK_FORM_VIEW_PATH,
+                            (BookFormController c) -> c.setBookData(current, "ADD_EXEMPLAR"));
+                }
+            });
+            delBtn.setOnAction(e -> {
+                Llibre current = getCurrentItem();
+                if (current != null) deleteBook(current);
+            });
+        }
+
+        private Llibre getCurrentItem() {
+            int rowIndex = getIndex();
+            return (rowIndex >= 0 && rowIndex < getTableView().getItems().size()) ? getTableView().getItems().get(rowIndex) : null;
+        }
+
+        @Override
+        protected void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            setGraphic(empty ? null : box);
+        }
+    }
+
+    /**
      * Inicialitza el combo de cerca per camps.
      */
     private void initSearchCombo() {
@@ -221,8 +254,8 @@ public class BooksListController {
      * Configura els listeners per als camps de cerca.
      */
     private void setupListeners() {
-        searchField.textProperty().addListener((o, oldV, newV) -> applyFilterAndPagination());
-        searchFieldCombo.valueProperty().addListener((o, oldV, newV) -> applyFilterAndPagination());
+        searchField.textProperty().addListener((obs, oldValue, newValue) -> applyFilterAndPagination());
+        searchFieldCombo.valueProperty().addListener((obs, oldValue, newValue) -> applyFilterAndPagination());
         searchByIdField.setOnAction(e -> onSearchById());
         newExemplarButton.setOnAction(e -> onNewExemplar());
     }
@@ -233,7 +266,6 @@ public class BooksListController {
     private void loadBooks() {
         Task<List<Llibre>> task = createLoadBooksTask();
 
-        // replaced multi-statement lambda with a single-expression lambda that delegates to a private helper
         task.setOnSucceeded(e -> onLoadBooksSucceeded(task.getValue()));
 
         task.setOnFailed(e -> {
@@ -268,19 +300,19 @@ public class BooksListController {
      * Aplica els filtres i la paginacio a la llista de llibres.
      */
     private void applyFilterAndPagination() {
-        final String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
+        final String query = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
         final String field = searchFieldCombo.getValue() == null ? "Tots" : searchFieldCombo.getValue();
 
         filteredList.setAll(masterList.filtered(book -> {
-            if (q.isEmpty()) return true;
+            if (query.isEmpty()) return true;
 
             return switch (field) {
-                case "ISBN" -> safeContains(book.getIsbn(), q);
-                case "Títol" -> safeContains(book.getTitol(), q);
-                case "Editorial" -> safeContains(book.getEditorial(), q);
-                case "Autor" -> book.getAutor() != null && safeContains(book.getAutor().getNom(), q);
-                default -> safeContains(book.getIsbn(), q) || safeContains(book.getTitol(), q)
-                        || safeContains(book.getEditorial(), q) || (book.getAutor() != null && safeContains(book.getAutor().getNom(), q));
+                case "ISBN" -> safeContains(book.getIsbn(), query);
+                case "Títol" -> safeContains(book.getTitol(), query);
+                case "Editorial" -> safeContains(book.getEditorial(), query);
+                case "Autor" -> book.getAutor() != null && safeContains(book.getAutor().getNom(), query);
+                default -> safeContains(book.getIsbn(), query) || safeContains(book.getTitol(), query)
+                        || safeContains(book.getEditorial(), query) || (book.getAutor() != null && safeContains(book.getAutor().getNom(), query));
             };
         }));
         currentPage = 0;
@@ -291,11 +323,11 @@ public class BooksListController {
      * Comprova si una cadena conte la cerca de manera segura.
      *
      * @param value Cadena on cercar
-     * @param q Text a cercar
+     * @param query Text a cercar
      * @return true si la cadena conte el text
      */
-    private static boolean safeContains(String value, String q) {
-        return value != null && value.toLowerCase().contains(q);
+    private static boolean safeContains(String value, String query) {
+        return value != null && value.toLowerCase().contains(query);
     }
 
     /**
@@ -382,16 +414,15 @@ public class BooksListController {
         long id = Long.parseLong(raw.trim());
         Task<Llibre> task = createSearchByIdTask(id);
 
-        // delegate to helper to remove multi-statement lambda
         task.setOnSucceeded(e -> onSearchByIdTaskSucceeded(task.getValue()));
 
         task.setOnFailed(e -> showSearchError(ERROR_TITLE, LLIBRE_NO_TROBAT));
         ApiClient.BG_EXEC.submit(task);
     }
 
-    private void onSearchByIdTaskSucceeded(Llibre b) {
-        if (b == null) showSearchError("No trobat", LLIBRE_NO_TROBAT);
-        else navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(b, "VIEW"));
+    private void onSearchByIdTaskSucceeded(Llibre book) {
+        if (book == null) showSearchError("No trobat", LLIBRE_NO_TROBAT);
+        else navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(book, "VIEW"));
     }
 
     /**
@@ -441,9 +472,9 @@ public class BooksListController {
         ApiClient.BG_EXEC.submit(task);
     }
 
-    private void onNewExemplarTaskSucceeded(Llibre b) {
-        if (b == null) showSearchError("No trobat", LLIBRE_NO_TROBAT);
-        else navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(b, "ADD_EXEMPLAR"));
+    private void onNewExemplarTaskSucceeded(Llibre book) {
+        if (book == null) showSearchError("No trobat", LLIBRE_NO_TROBAT);
+        else navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(book, "ADD_EXEMPLAR"));
     }
 
     /**
@@ -453,6 +484,17 @@ public class BooksListController {
      */
     private void viewBook(Llibre book) {
         if (book != null) navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(book, "VIEW"));
+    }
+
+    /**
+     * Navega a la vista de edicio del llibre.
+     *
+     * @param book Llibre a editar
+     */
+    private void editBook(Llibre book) {
+        if (book != null) {
+            navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(book, "EDIT"));
+        }
     }
 
     /**
@@ -466,7 +508,6 @@ public class BooksListController {
         alert.setTitle("Confirmar eliminacio");
         alert.setHeaderText("Vols eliminar aquest llibre?");
         alert.setContentText(String.format("ID: %d%nTítol: %s", book.getId(), book.getTitol()));
-        // single-expression lambda preserved; replaced multi-statement body by helper to remove unnecessary braces
         alert.showAndWait().ifPresent(btn -> { if (btn == ButtonType.OK) checkAndDeleteBookWithExemplarCheck(book); });
     }
 
@@ -477,8 +518,6 @@ public class BooksListController {
      */
     private void checkAndDeleteBookWithExemplarCheck(Llibre book) {
         Task<List<Exemplar>> checkTask = createExemplarsCheckTask(book);
-
-        // delegate to helper to remove multi-statement lambda
         checkTask.setOnSucceeded(e -> onCheckExemplarsSucceeded(checkTask.getValue(), book));
 
         checkTask.setOnFailed(e -> {
@@ -490,15 +529,15 @@ public class BooksListController {
         ApiClient.BG_EXEC.submit(checkTask);
     }
 
-    private void onCheckExemplarsSucceeded(List<Exemplar> linked, Llibre book) {
-        if (linked == null || linked.isEmpty()) {
+    private void onCheckExemplarsSucceeded(List<Exemplar> exemplarsLinked, Llibre book) {
+        if (exemplarsLinked == null || exemplarsLinked.isEmpty()) {
             performDeleteBook(book);
         } else {
             Platform.runLater(() -> {
                 String msg = String.format(
                         "No es pot eliminar aquest llibre perque te %d exemplars associats.%n" +
                                 "Primer cal eliminar-los",
-                        linked.size()
+                        exemplarsLinked.size()
                 );
 
                 Alert info = new Alert(Alert.AlertType.INFORMATION);
@@ -535,8 +574,6 @@ public class BooksListController {
      */
     private void performDeleteBook(Llibre book) {
         Task<Void> task = createDeleteBookTask(book);
-
-        // delegate to helper to remove multi-statement lambda
         task.setOnSucceeded(e -> onDeleteBookSucceeded(book));
 
         task.setOnFailed(e -> {
@@ -561,11 +598,10 @@ public class BooksListController {
         Platform.runLater(() -> {
             masterList.remove(book);
             applyFilterAndPagination();
-            // inline the success dialog here to avoid always-passing-a-constant to the generic showInfo
-            Alert a = new Alert(Alert.AlertType.INFORMATION);
-            a.setHeaderText(null);
-            a.setContentText(SUCCESS_DELETE);
-            a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setContentText(SUCCESS_DELETE);
+            alert.showAndWait();
         });
     }
 
@@ -593,11 +629,11 @@ public class BooksListController {
      */
     private void showSearchError(String title, String message) {
         Platform.runLater(() -> {
-            Alert a = new Alert(Alert.AlertType.WARNING);
-            a.setTitle(title);
-            a.setHeaderText(null);
-            a.setContentText(message);
-            a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
         });
     }
 
@@ -609,11 +645,11 @@ public class BooksListController {
      */
     private void showError(String title, String message) {
         Platform.runLater(() -> {
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle(title);
-            a.setHeaderText(null);
-            a.setContentText(message);
-            a.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
         });
     }
 
