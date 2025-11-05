@@ -47,4 +47,8 @@ module com.bibliosedaos.bibliodesktop {
     opens com.bibliosedaos.desktop.security to javafx.fxml;
     exports com.bibliosedaos.desktop.model;
     opens com.bibliosedaos.desktop.model to com.fasterxml.jackson.databind;
+
+    // CONFIG
+    exports com.bibliosedaos.desktop.config;
+    opens com.bibliosedaos.desktop.config to javafx.fxml;
 }

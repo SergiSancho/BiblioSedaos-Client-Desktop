@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -413,9 +414,11 @@ public class UsersListController {
      * @param query Text a cercar
      * @return true si el camp conte la cerca
      */
-    private static boolean safeContains(String field, String query) {
-        return field != null && field.toLowerCase().contains(query);
+    static boolean safeContains(String field, String query) {
+        if (field == null || query == null) return false;
+        return field.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT));
     }
+
 
     /**
      * Gestiona la cerca per ID o NIF.
@@ -448,12 +451,21 @@ public class UsersListController {
      * @return true si l'entrada es valida
      */
     boolean validateSearchInput(String query, String type) {
-        if ("ID".equals(type) && !query.matches("^\\d+$")) {
-            showSearchError("Error de format", "L'ID ha de ser numeric.");
+        if (query == null || query.isBlank()) {
+            showSearchError("Error de cerca", "Introdueix un ID o NIF.");
             return false;
-        } else if ("NIF".equals(type) && !query.matches("^\\d{8}[A-Za-z]$")) {
-            showSearchError("Error de format", "El NIF ha de tenir 8 números i 1 lletra.\nExemple: 12345678A");
-            return false;
+        }
+
+        if ("ID".equals(type)) {
+            if (!query.matches("^\\d+$")) {
+                showSearchError("Error de format", "L'ID ha de ser numeric.");
+                return false;
+            }
+        } else if ("NIF".equals(type)) {
+            if (!query.matches("^\\d{8}[A-Za-z]$")) {
+                showSearchError("Error de format", "El NIF ha de tenir 8 números i 1 lletra.\nExemple: 12345678A");
+                return false;
+            }
         }
         return true;
     }
@@ -510,6 +522,8 @@ public class UsersListController {
      * @param query Text de cerca utilitzat
      */
     private void showUserNotFound(String searchType, String query) {
+        if (Boolean.getBoolean("tests.noDialog")) return;
+
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Usuari no trobat");
@@ -530,6 +544,8 @@ public class UsersListController {
      * @param message Missatge de l'error
      */
     private void showSearchError(String title, String message) {
+        if (Boolean.getBoolean("tests.noDialog")) return;
+
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle(title);
@@ -612,6 +628,8 @@ public class UsersListController {
      * @param message Missatge de l'error
      */
     private void showError(String title, String message) {
+        if (Boolean.getBoolean("tests.noDialog")) return;
+
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(title);

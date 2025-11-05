@@ -332,7 +332,7 @@ public class UserFormController {
      * @param value cadena a verificar
      * @return cadena original o cadena buida si es null
      */
-    private String safeGet(String value) {
+    String safeGet(String value) {
         return value != null ? value : "";
     }
 

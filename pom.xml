@@ -121,7 +121,16 @@
                         <!--  -add-opens javafx.base/java.lang=ALL-UNNAMED-->
                         --add-opens javafx.fxml/javafx.fxml=ALL-UNNAMED
                         <!--  -add-opens javafx.controls/javafx.scene.control=ALL-UNNAMED-->
+                        --add-opens=javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                        --add-opens=javafx.graphics/com.sun.javafx.embed=ALL-UNNAMED
+                        --add-opens=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED
+                        --add-opens=javafx.graphics/com.sun.javafx.stage=ALL-UNNAMED
+                        --add-opens=javafx.controls/javafx.scene.control=ALL-UNNAMED
+                        --add-opens=javafx.base/com.sun.javafx.logging=ALL-UNNAMED
                     </argLine>
+                    <systemPropertyVariables>
+                        <tests.noDialog>true</tests.noDialog>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 
@@ -157,6 +166,11 @@
 
                     <!-- Opcional: no fallar el build si hay warnings de javadoc -->
                     <failOnError>false</failOnError>
+                    <!-- Fuerza la versión Java para javadoc -->
+                    <source>17</source>
+
+                    <!-- Asegura que javadoc encuentre los .java <sourcepath>${project.basedir}/src/main/java</sourcepath>-->
+
                 </configuration>
 
                 <!-- (Opcional) dos ejecuciones si quieres enlazarlas al ciclo de vida -->

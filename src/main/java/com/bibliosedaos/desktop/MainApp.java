@@ -35,8 +35,6 @@ public class MainApp extends Application {
     private static final double MIN_WIDTH = 800.0;
     private static final double MIN_HEIGHT = 480.0;
 
-    private AppConfig appConfig;
-
     /**
      * Inicialitza la configuracio de l'aplicacio abans de mostrar la interficie.
      * Llegeix la configuracio des d'un fitxer extern.
@@ -46,7 +44,7 @@ public class MainApp extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        this.appConfig = new AppConfig(); // llegeix app.properties
+        AppConfig appConfig = new AppConfig();
         ApiFactory.setUseMock(appConfig.isUseMock());
     }
 

@@ -20,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.shape.SVGPath;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -326,9 +327,11 @@ public class BooksListController {
      * @param query Text a cercar
      * @return true si la cadena conte el text
      */
-    private static boolean safeContains(String value, String query) {
-        return value != null && value.toLowerCase().contains(query);
+    static boolean safeContains(String value, String query) {
+        if (value == null || query == null) return false;
+        return value.toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT));
     }
+
 
     /**
      * Actualitza la informacio de paginacio.
@@ -628,6 +631,8 @@ public class BooksListController {
      * @param message Missatge de l'error
      */
     private void showSearchError(String title, String message) {
+        if (Boolean.getBoolean("tests.noDialog")) return;
+
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle(title);
@@ -644,6 +649,8 @@ public class BooksListController {
      * @param message Missatge de l'error
      */
     private void showError(String title, String message) {
+        if (Boolean.getBoolean("tests.noDialog")) return;
+
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(title);
@@ -659,6 +666,8 @@ public class BooksListController {
      * @param message Missatge de l'error
      */
     private void showError(String message) {
+        if (Boolean.getBoolean("tests.noDialog")) return;
+
         showError(ERROR_TITLE, message);
     }
 }
