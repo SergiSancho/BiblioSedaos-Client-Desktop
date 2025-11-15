@@ -107,4 +107,16 @@ public final class ApiFactory {
     public static ExemplarApi createExemplarApi() {
         return new HttpExemplarApi();
     }
+
+    /**
+     * Crea una implementacio de PrestecApi segons la configuracio actual.
+     *
+     * En mode mock no implementat,
+     * en mode real retorna un client HTTP que es comunica amb el servidor.
+     *
+     * @return implementacio configurada de PrestecApi
+     */
+    public static PrestecApi createPrestecApi() {
+        return new HttpPrestecApi();
+    }
 }

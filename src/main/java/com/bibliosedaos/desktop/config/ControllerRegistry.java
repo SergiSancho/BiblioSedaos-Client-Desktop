@@ -22,6 +22,7 @@ public class ControllerRegistry {
     private final LlibreService llibreService;
     private final AutorService autorService;
     private final ExemplarService exemplarService;
+    private final PrestecService prestecService;
     private final Navigator navigator;
 
     /**
@@ -39,12 +40,14 @@ public class ControllerRegistry {
                               LlibreService llibreService,
                               AutorService autorService,
                               ExemplarService exemplarService,
+                              PrestecService prestecService,
                               Navigator navigator) {
         this.authService = authService;
         this.userService = userService;
         this.llibreService = llibreService;
         this.autorService = autorService;
         this.exemplarService = exemplarService;
+        this.prestecService = prestecService;
         this.navigator = navigator;
     }
 
@@ -65,6 +68,9 @@ public class ControllerRegistry {
             if (clazz == BooksListController.class) return new BooksListController(llibreService, exemplarService, navigator);
             if (clazz == BookFormController.class) return new BookFormController(llibreService, autorService, exemplarService, navigator);
             if (clazz == BooksBrowseController.class) return new BooksBrowseController(llibreService, exemplarService, navigator);
+            if (clazz == LoansListController.class) return new LoansListController(prestecService, navigator);
+            if (clazz == LoanFormController.class) return new LoanFormController(prestecService, exemplarService, userService, navigator);
+            if (clazz == MyLoansController.class) return new MyLoansController(prestecService);
             return clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error creant controller {0}", clazz.getName());

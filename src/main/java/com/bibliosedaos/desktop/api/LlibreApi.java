@@ -1,11 +1,13 @@
 package com.bibliosedaos.desktop.api;
 
 import com.bibliosedaos.desktop.model.Llibre;
+
 import java.util.List;
 
 /**
  * Interficie per a les operacions de llibres.
  * Gestiona la recuperacio i actualitzacio de dades de llibres.
+ *
  * @author Sergio
  * @version 1.0-SNAPSHOT
  * @since 2025
@@ -32,7 +34,7 @@ public interface LlibreApi {
     /**
      * Actualitza les dades d'un llibre.
      *
-     * @param id ID del llibre a actualitzar
+     * @param id     ID del llibre a actualitzar
      * @param llibre dades actualitzades del llibre
      * @return llibre actualitzat
      * @throws ApiException si hi ha errors de comunicacio o validacio

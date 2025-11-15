@@ -448,7 +448,7 @@ public class BooksListController {
      */
     @FXML
     private void onNewBook() {
-        navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(null, "CREATE"));
+        navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController controller) -> controller.setBookData(null, "CREATE"));
     }
 
     /**
@@ -477,7 +477,7 @@ public class BooksListController {
 
     private void onNewExemplarTaskSucceeded(Llibre book) {
         if (book == null) showSearchError("No trobat", LLIBRE_NO_TROBAT);
-        else navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(book, "ADD_EXEMPLAR"));
+        else navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController controller) -> controller.setBookData(book, "ADD_EXEMPLAR"));
     }
 
     /**
@@ -486,7 +486,7 @@ public class BooksListController {
      * @param book Llibre a visualitzar
      */
     private void viewBook(Llibre book) {
-        if (book != null) navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(book, "VIEW"));
+        if (book != null) navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController controller) -> controller.setBookData(book, "VIEW"));
     }
 
     /**
@@ -496,7 +496,7 @@ public class BooksListController {
      */
     private void editBook(Llibre book) {
         if (book != null) {
-            navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController c) -> c.setBookData(book, "EDIT"));
+            navigator.showMainView(BOOK_FORM_VIEW_PATH, (BookFormController controller) -> controller.setBookData(book, "EDIT"));
         }
     }
 

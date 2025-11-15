@@ -13,6 +13,8 @@ module com.bibliosedaos.bibliodesktop {
     requires net.synedra.validatorfx;
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.datatype.jsr310;
+
 
     // PAQUETES PRINCIPALES
     opens com.bibliosedaos.desktop to javafx.fxml;
@@ -40,13 +42,13 @@ module com.bibliosedaos.bibliodesktop {
 
     // DTOs
     exports com.bibliosedaos.desktop.model.dto;
-    opens com.bibliosedaos.desktop.model.dto to com.fasterxml.jackson.databind;
+    opens com.bibliosedaos.desktop.model.dto to com.fasterxml.jackson.databind, com.fasterxml.jackson.datatype.jsr310;
 
     // SECURITY
     exports com.bibliosedaos.desktop.security;
     opens com.bibliosedaos.desktop.security to javafx.fxml;
     exports com.bibliosedaos.desktop.model;
-    opens com.bibliosedaos.desktop.model to com.fasterxml.jackson.databind;
+    opens com.bibliosedaos.desktop.model to com.fasterxml.jackson.databind, com.fasterxml.jackson.datatype.jsr310;
 
     // CONFIG
     exports com.bibliosedaos.desktop.config;

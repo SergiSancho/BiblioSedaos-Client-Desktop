@@ -2,6 +2,8 @@ package com.bibliosedaos.desktop.api;
 
 import com.bibliosedaos.desktop.security.SessionStore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -38,7 +40,7 @@ public class ApiClient {
     public static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
 
     /** ObjectMapper compartit per serialització i deserialització JSON. */
-    public static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final ObjectMapper MAPPER = createMapper();
 
     /** Executor per a tasques en segon pla amb fils dimoni. */
     public static final ExecutorService BG_EXEC = createExecutor();
@@ -49,6 +51,20 @@ public class ApiClient {
      */
     private ApiClient() {
 
+    }
+
+    /**
+     * Crea i configura l'ObjectMapper utilitzat a tota l'aplicació.
+     * Registra JavaTimeModule per suport de java.time.
+     * Desactiva WRITE_DATES_AS_TIMESTAMPS per utilitzar formats ISO (p. ex. "2025-11-12")
+     *
+     * @return ObjectMapper configurat
+     */
+    private static ObjectMapper createMapper() {
+        ObjectMapper m = new ObjectMapper();
+        m.registerModule(new JavaTimeModule());
+        m.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return m;
     }
 
     /**

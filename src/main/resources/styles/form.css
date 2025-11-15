@@ -113,3 +113,19 @@
 #formRoot .action-icon { -fx-scale-x: 1.0; -fx-scale-y: 1.0; -fx-fill: #7b1fa2; }
 
 #formRoot .autor-label { -fx-font-size: 16px; -fx-text-fill: #333; -fx-font-weight: 400; }
+
+#formRoot .field-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+    -fx-font-weight: 600;
+    -fx-alignment: CENTER_LEFT;
+    -fx-pref-width: 120;
+}
+
+#formRoot .value-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+    -fx-font-weight: 400;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8 0;
+}
