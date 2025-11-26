@@ -5,17 +5,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.InputStream;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.time.Duration;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Client compartit per a comunicacions HTTP amb l'API REST.
+ * Client compartit per a comunicacions HTTP/HTTPS amb l'API REST.
  *
  * Proporciona infraestructura comuna per a totes les crides d'API:
- * client HTTP, serialització JSON i gestió de fils en segon pla.
+ * client HTTP (configurable per truststore), serialització JSON i gestió
+ * de fils en segon pla.
+ *
+ * Llegiu les propietats JVM suportades:
+ * -Dapi.base.url=https://localhost:8443
+ * -Dapi.ssl.trustStore=/ruta/a/truststore.jks
+ * -Dapi.ssl.trustStorePassword=changeit
+ *
+ * Si no es passa trustStore, s'usarà l'SSLContext per defecte de la JVM
+ * (p.ex. cacerts o el -Djavax.net.ssl.trustStore si el definíu).
  *
  * Assistència d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
  * S'ha revisat i adaptat manualment per l'autor. Veure llegeixme.pdf per detalls.
@@ -30,14 +46,16 @@ public class ApiClient {
 
     /**
      * Retorna la URL base de la API (configurable mitjançant la propietat del sistema).
-     *@return la URL base en forma de cadena
+     * Per defecte HTTPS i port 8443.
+     *
+     * @return la URL base en forma de cadena
      */
     public static String getBaseUrl() {
-        return System.getProperty("api.base.url", "http://localhost:8080");
+        return System.getProperty("api.base.url", "https://localhost:8443");
     }
 
-    /** Client HTTP reutilitzable amb configuració per defecte. */
-    public static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
+    /** HttpClient reutilitzable configurat amb SSLContext segons propietats. */
+    public static final HttpClient HTTP_CLIENT = createHttpClient();
 
     /** ObjectMapper compartit per serialització i deserialització JSON. */
     public static final ObjectMapper MAPPER = createMapper();
@@ -50,13 +68,11 @@ public class ApiClient {
      * No s'ha d'instanciar.
      */
     private ApiClient() {
-
+        // utilitat: no instanciar
     }
 
     /**
      * Crea i configura l'ObjectMapper utilitzat a tota l'aplicació.
-     * Registra JavaTimeModule per suport de java.time.
-     * Desactiva WRITE_DATES_AS_TIMESTAMPS per utilitzar formats ISO (p. ex. "2025-11-12")
      *
      * @return ObjectMapper configurat
      */
@@ -68,18 +84,16 @@ public class ApiClient {
     }
 
     /**
-     * Crea un ExecutorService configurat per a execució en segon pla.
-     * Pool de 2-50 fils, cua de 200 tasques, política CallerRunsPolicy
-     * i fils d'usuari persistents amb noms "biblio-bg-<id>".
+     * Crea l'ExecutorService per a tasques en segon pla.
      *
      * @return ExecutorService configurat
      */
     private static ExecutorService createExecutor() {
         int core = Math.max(2, Runtime.getRuntime().availableProcessors());
-        int max = Math.max(core, 50); // límite razonable para picos
+        int max = Math.max(core, 50);
         long keepAlive = 60L;
 
-        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(200); // cola acotada
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>(200);
         ThreadFactory tf = r -> {
             Thread t = new Thread(r);
             t.setDaemon(true);
@@ -99,6 +113,64 @@ public class ApiClient {
         return exec;
     }
 
+    /**
+     * Crea un HttpClient configurat amb un SSLContext construït des d'un truststore opcional.
+     * Propietats del sistema:
+     * - api.ssl.trustStore
+     * - api.ssl.trustStorePassword
+     *
+     * Si no es proporcionen, s'usa SSLContext.getDefault().
+     *
+     * @return HttpClient configurat
+     */
+    private static HttpClient createHttpClient() {
+        try {
+            String trustStorePath = System.getProperty("api.ssl.trustStore");
+            String trustStorePass = System.getProperty("api.ssl.trustStorePassword");
+
+            SSLContext sslContext;
+            if (trustStorePath != null && !trustStorePath.isBlank()) {
+                sslContext = buildSslContextFromTrustStore(trustStorePath, trustStorePass);
+                LOGGER.info(() -> "SSLContext creat des de trustStore: " + trustStorePath);
+            } else {
+                sslContext = SSLContext.getDefault();
+                LOGGER.info("Usant SSLContext per defecte de la JVM");
+            }
+
+            return HttpClient.newBuilder()
+                    .sslContext(sslContext)
+                    .connectTimeout(Duration.ofSeconds(10))
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .build();
+
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "No s'ha pogut inicialitzar SSLContext personalitzat; s'usa HttpClient per defecte.", e);
+            return HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+        }
+    }
+
+    /**
+     * Construeix un SSLContext carregant el truststore JKS des de la ruta indicada.
+     *
+     * @param trustStorePath ruta al fitxer truststore.jks
+     * @param trustStorePassword contrasenya del truststore (pot ser null)
+     * @return SSLContext inicialitzat amb TrustManagers del truststore
+     * @throws Exception si hi ha errors de lectura o inicialització
+     */
+    private static SSLContext buildSslContextFromTrustStore(String trustStorePath, String trustStorePassword) throws Exception {
+        KeyStore trustStore = KeyStore.getInstance("JKS");
+        try (InputStream is = Files.newInputStream(Paths.get(trustStorePath))) {
+            char[] pass = (trustStorePassword == null) ? null : trustStorePassword.toCharArray();
+            trustStore.load(is, pass);
+        }
+
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(trustStore);
+
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, tmf.getTrustManagers(), null);
+        return sslContext;
+    }
 
     /**
      * Afegeix la capçalera d'autorització amb el token JWT si està disponible.
@@ -116,46 +188,16 @@ public class ApiClient {
 
     /**
      * Classe interna per a la deserialització de respostes d'error del servidor.
-     *
-     * Utilitzada per extreure missatges d'error de les respostes JSON.
      */
     public static class ErrorResponse {
-
         private String message;
-
-        /**
-         * Constructor per defecte necessari per a la deserialització JSON.
-         */
-        public ErrorResponse() {
-            // Constructor buit necessari per la deserialització JSON
-        }
-
-        /**
-         * Retorna el missatge d'error.
-         *
-         * @return missatge d'error
-         */
-        public String getMessage() {
-            return message;
-        }
-
-        /**
-         * Estableix el missatge d'error.
-         *
-         * Necessari per la deserialització JSON amb Jackson.
-         *
-         * @param message missatge d'error
-         */
-        public void setMessage(String message) {
-            this.message = message;
-        }
+        public ErrorResponse() { }
+        public String getMessage() { return message; }
+        public void setMessage(String message) { this.message = message; }
     }
 
     /**
      * Tanca l'executor de forma ordenada durant la finalització de l'aplicació.
-     *
-     * Permet als fils existents completar-se (fins a 10 segons) abans de forçar
-     * el tancament. Registra advertiments si l'executor resisteix la finalització.
      */
     public static void shutdownExecutor() {
         BG_EXEC.shutdown();
@@ -172,10 +214,9 @@ public class ApiClient {
             LOGGER.log(Level.WARNING, "El fil que estava esperant la finalització de BG_EXEC ha estat interromput.", e);
         }
     }
+
     /**
-     * Extrau un missatge legible des del cos de la resposta d'error del servidor.
-     * Aquest mètode intenta primer analitzar la resposta com a JSON amb un camp "message".
-     * Si falla l'anàlisi JSON o el camp message és buit, retorna el text pla netejat.
+     * Extrau un missatge llegible des del cos de la resposta d'error del servidor.
      *
      * @param body Cos de la resposta HTTP d'error
      * @param fallback Missatge per defecte a retornar si el cos és buit o null
@@ -188,9 +229,7 @@ public class ApiClient {
             if (err != null && err.getMessage() != null && !err.getMessage().isBlank()) {
                 return err.getMessage();
             }
-        } catch (Exception ignored) {
-            // no es JSON de la forma { "message": ... } -> usar texto plano
-        }
+        } catch (Exception ignored) { }
         String txt = body.replaceAll("\\s+", " ").trim();
         return txt.length() <= 300 ? txt : txt.substring(0, 300) + "...";
     }
