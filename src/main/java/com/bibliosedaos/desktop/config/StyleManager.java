@@ -23,6 +23,8 @@ public final class StyleManager {
     private static final String LOANS_LIST_VIEW = "/com/bibliosedaos/desktop/loans-list-view.fxml";
     private static final String LOAN_FORM_VIEW = "/com/bibliosedaos/desktop/loan-form-view.fxml";
     private static final String MY_LOANS_VIEW = "/com/bibliosedaos/desktop/my-loans-view.fxml";
+    private static final String GROUPS_LIST_VIEW = "/com/bibliosedaos/desktop/groups-list-view.fxml";
+    private static final String GROUP_FORM_VIEW = "/com/bibliosedaos/desktop/group-form-view.fxml";
 
     /**
      * Constructor privat per evitar instanciacio.
@@ -50,5 +52,7 @@ public final class StyleManager {
         navigator.registerViewCss(LOANS_LIST_VIEW, "/styles/list.css");
         navigator.registerViewCss(LOAN_FORM_VIEW, "/styles/form.css");
         navigator.registerViewCss(MY_LOANS_VIEW, "/styles/list.css");
+        navigator.registerViewCss(GROUPS_LIST_VIEW, "/styles/list.css");
+        navigator.registerViewCss(GROUP_FORM_VIEW, "/styles/form.css");
     }
 }

@@ -21,7 +21,7 @@
                     <Label wrapText="true"
                            maxWidth="720"
                            styleClass="welcome-subtitle"
-                           text="Aquesta és l'aplicació escriptori de Biblio Sedaos.&#10;A la barra lateral de l'esquerra:&#10;• L'administrador/a pot gestionar usuaris, llibres i préstecs.&#10;• Les usuàries normals poden cercar llibres i consultar els seus préstecs."/>
+                           text="Aquesta és l'aplicació escriptori de Biblio Sedaos.&#10;A la barra lateral de l'esquerra:&#10;• L'administrador/a pot gestionar usuaris, llibres, préstecs i grups de lectura.&#10;• Les usuàries normals poden cercar llibres, consultar els seus préstecs i apuntar-se a grups de lectura."/>
                 </VBox>
             </VBox>
         </StackPane>

@@ -216,3 +216,24 @@
 }
 
 .primary-btn:hover { -fx-background-color: linear-gradient(#9c27b0, #7b1fa2); }
+
+.second-btn {
+         -fx-background-color: white;
+         -fx-border-color: #5e0f85;
+         -fx-border-width: 2;
+         -fx-border-radius: 6;
+         -fx-background-radius: 12;
+         -fx-text-fill: #5e0f85;
+         -fx-font-size: 15px;
+         -fx-font-weight: 700;
+         -fx-padding: 6 12 6 12;
+         -fx-pref-height: 34;
+         -fx-min-height: 34;
+         -fx-max-height: 34;
+         -fx-content-display: LEFT;
+         -fx-graphic-text-gap: 8;
+}
+
+.second-btn:hover {
+     -fx-background-color: #f2f2f2;
+}

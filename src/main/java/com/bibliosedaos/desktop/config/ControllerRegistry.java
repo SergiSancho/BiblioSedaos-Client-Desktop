@@ -23,6 +23,8 @@ public class ControllerRegistry {
     private final AutorService autorService;
     private final ExemplarService exemplarService;
     private final PrestecService prestecService;
+    private final GrupService grupService;
+    private final HorariService horariService;
     private final Navigator navigator;
 
     /**
@@ -33,6 +35,8 @@ public class ControllerRegistry {
      * @param llibreService Servei de llibres
      * @param autorService Servei d'autors
      * @param exemplarService Servei d'exemplars
+     * @param grupService Servei d'exemplars
+     * @param horariService Servei d'exemplars
      * @param navigator Gestor de navegacio
      */
     public ControllerRegistry(AuthService authService,
@@ -41,6 +45,8 @@ public class ControllerRegistry {
                               AutorService autorService,
                               ExemplarService exemplarService,
                               PrestecService prestecService,
+                              GrupService grupService,
+                              HorariService horariService,
                               Navigator navigator) {
         this.authService = authService;
         this.userService = userService;
@@ -48,6 +54,8 @@ public class ControllerRegistry {
         this.autorService = autorService;
         this.exemplarService = exemplarService;
         this.prestecService = prestecService;
+        this.grupService = grupService;
+        this.horariService = horariService;
         this.navigator = navigator;
     }
 
@@ -71,6 +79,8 @@ public class ControllerRegistry {
             if (clazz == LoansListController.class) return new LoansListController(prestecService, navigator);
             if (clazz == LoanFormController.class) return new LoanFormController(prestecService, exemplarService, userService, navigator);
             if (clazz == MyLoansController.class) return new MyLoansController(prestecService);
+            if (clazz == GroupsListController.class) return new GroupsListController(grupService, horariService, navigator);
+            if (clazz == GroupFormController.class) return new GroupFormController(grupService, horariService, navigator);
             return clazz.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error creant controller {0}", clazz.getName());

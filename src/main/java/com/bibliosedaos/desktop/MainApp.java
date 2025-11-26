@@ -72,10 +72,12 @@ public class MainApp extends Application {
         AutorService autorService = new AutorService(ApiFactory.createAutorApi());
         ExemplarService exemplarService = new ExemplarService(ApiFactory.createExemplarApi());
         PrestecService prestecService = new PrestecService(ApiFactory.createPrestecApi());
+        GrupService grupService = new GrupService(ApiFactory.createGrupApi());
+        HorariService horariService = new HorariService(ApiFactory.createHorariApi());
 
         // ControllerFactory per a injeccio de dependencies en controladors
         ControllerRegistry registry = new ControllerRegistry(
-                authService, userService, llibreService, autorService, exemplarService, prestecService, navigator
+                authService, userService, llibreService, autorService, exemplarService, prestecService, grupService, horariService, navigator
         );
         navigator.setControllerFactory(registry::createController);
 

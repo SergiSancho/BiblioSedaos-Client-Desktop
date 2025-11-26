@@ -119,4 +119,30 @@ public final class ApiFactory {
     public static PrestecApi createPrestecApi() {
         return new HttpPrestecApi();
     }
+
+    /**
+
+     * Crea una implementacio de GrupApi segons la configuracio actual.
+     *
+     * En mode mock no implementat,
+     * en mode real retorna un client HTTP que es comunica amb el servidor.
+     *
+     * @return implementacio configurada de GrupApi
+     */
+    public static GrupApi createGrupApi() {
+        return new HttpGrupApi();
+    }
+
+    /**
+
+     * Crea una implementacio de HorariApi segons la configuracio actual.
+     *
+     * En mode mock no implementat,
+     * en mode real retorna un client HTTP que es comunica amb el servidor.
+     *
+     * @return implementacio configurada de HorariApi
+     */
+    public static HorariApi createHorariApi() {
+        return new HttpHorariApi();
+    }
 }

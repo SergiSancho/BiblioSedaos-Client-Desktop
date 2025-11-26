@@ -330,4 +330,12 @@ public class DashboardController {
     private void onBrowseBooks() {
         navigateTo("/com/bibliosedaos/desktop/books-browse-view.fxml");
     }
+
+    /**
+     * Navega a la vista de Grups de lectura (admin i usuari).
+     */
+    @FXML
+    private void onShowGrups() {
+        navigateTo("/com/bibliosedaos/desktop/groups-list-view.fxml");
+    }
 }

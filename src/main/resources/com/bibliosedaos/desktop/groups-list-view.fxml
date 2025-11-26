@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.bibliosedaos.desktop.controller.GroupsListController"
+            prefWidth="1200" prefHeight="800"
+            styleClass="root">
+
+    <top>
+        <VBox spacing="8" styleClass="header-section">
+            <padding>
+                <Insets top="20" right="24" bottom="16" left="24"/>
+            </padding>
+
+            <HBox alignment="CENTER" spacing="18">
+                <SVGPath styleClass="header-icon" content="M1.981 8.444h20.038c.398 0 .747.264.856.648l1.105 3.904.02.139c0 .209-.127.402-.33.48l-.001.001c-.24.092-.511-.005-.635-.231l-1.144-2.071-.328 7.967c-.017.403-.347.719-.749.719h-.001c-.393 0-.716-.306-.746-.698-.068-.865-.249-2.933-.304-3.752-.022-.34-.271-.54-.541-.54-.242 0-.514.2-.537.54-.055.819-.236 2.887-.304 3.752-.03.392-.352.698-.746.698h-.001c-.402 0-.732-.316-.749-.719-.086-2.08-.435-8.736-.435-8.736h-1.669s-.349 6.656-.435 8.736c-.017.402-.347.719-.749.719h-.001c-.394 0-.716-.306-.746-.698-.068-.865-.249-2.933-.304-3.752-.023-.34-.295-.54-.537-.54h-.004c-.242 0-.515.2-.537.54-.055.819-.236 2.887-.304 3.752-.03.392-.353.698-.746.698h-.001c-.402 0-.732-.316-.749-.719-.086-2.08-.435-8.736-.435-8.736h-1.681s-.349 6.656-.435 8.736c-.017.403-.347.719-.749.719h-.001c-.394 0-.716-.306-.746-.698-.068-.865-.249-2.933-.304-3.752-.023-.34-.295-.54-.537-.54-.27 0-.519.2-.541.54-.055.819-.236 2.887-.304 3.752-.03.392-.353.698-.746.698h-.001c-.402 0-.732-.316-.749-.719l-.328-7.967-1.144 2.071c-.124.226-.395.323-.635.231l-.001-.001c-.203-.078-.33-.271-.33-.48l.02-.139 1.105-3.904c.109-.384.458-.648.856-.648zm3.019-4.444c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2zm14 0c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm-6.994 0c1.104 0 2 .896 2 2s-.896 2-2 2-2-.896-2-2 .896-2 2-2z"/>
+                <Label text="Grups de Lectura" styleClass="header-title"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="22" styleClass="search-container">
+
+                    <Button fx:id="veureHorarisButton" onAction="#onVeureHoraris"
+                            styleClass="second-btn" text="Veure Horaris">
+                        <graphic>
+                            <SVGPath styleClass="action-icon" content="M12 12h3v2h-5v-6h2v4zm9-1h-1.07c-.251-2.006-1.218-3.792-2.647-5.093-1.283-1.166-1.228-2.247-1.856-5.907h-7.854c-.628 3.66-.573 4.741-1.856 5.907-1.67 1.52-2.717 3.701-2.717 6.124 0 2.424 1.048 4.606 2.72 6.126 1.28 1.164 1.232 2.267 1.853 5.843h7.854c.622-3.576.573-4.679 1.854-5.843 1.445-1.314 2.421-3.124 2.66-5.157h1.059v-2zm-9.5 7.5c-3.589 0-6.5-2.911-6.5-6.5s2.911-6.5 6.5-6.5 6.5 2.911 6.5 6.5-2.911 6.5-6.5 6.5z"/>
+                        </graphic>
+                    </Button>
+
+                    <Button fx:id="afegirHorariButton" onAction="#onAfegirHorari"
+                            styleClass="second-btn" text="➕ Nou Horari">
+                    </Button>
+
+                    <Button fx:id="meusGrupsButton" onAction="#onMeusGrups"
+                            styleClass="second-btn" text="Els Meus Grups">
+                    </Button>
+
+                    <Button fx:id="crearGrupButton" onAction="#onCrearGrup"
+                            styleClass="primary-btn" text="➕ Crear Grup">
+                        <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
+                    </Button>
+                </HBox>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="main-scroll-pane">
+            <VBox spacing="8" styleClass="table-container">
+                <padding><Insets top="8" right="24" bottom="8" left="24"/></padding>
+
+                <TableView fx:id="groupsTable" styleClass="data-table" VBox.vgrow="ALWAYS" fixedCellSize="36">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" styleClass="id-column" minWidth="45"/>
+                        <TableColumn fx:id="nomColumn" text="Nom" minWidth="200"/>
+                        <TableColumn fx:id="tematicaColumn" text="Temàtica" minWidth="180"/>
+                        <TableColumn fx:id="horariColumn" text="Horari (Dia Hora)" minWidth="150"/>
+                        <TableColumn fx:id="actionsColumn" text="Accions" styleClass="actions-column" minWidth="267"/>
+                    </columns>
+                </TableView>
+
+                <HBox alignment="CENTER" spacing="16" styleClass="pagination-container">
+                    <Button fx:id="prevPageButton" onAction="#onPreviousPage" styleClass="pagination-btn" text="◀ Anterior"/>
+                    <Label fx:id="pageInfoLabel" styleClass="page-info" text="Pàgina 1 de 1"/>
+                    <Button fx:id="nextPageButton" onAction="#onNextPage" styleClass="pagination-btn" text="Següent ▶"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>
