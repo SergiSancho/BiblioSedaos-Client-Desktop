@@ -1,8 +1,6 @@
 module:com.bibliosedaos.bibliodesktop
 com.bibliosedaos.desktop
 com.bibliosedaos.desktop.api
-com.bibliosedaos.desktop.api.http
-com.bibliosedaos.desktop.api.mock
 com.bibliosedaos.desktop.config
 com.bibliosedaos.desktop.controller
 com.bibliosedaos.desktop.model

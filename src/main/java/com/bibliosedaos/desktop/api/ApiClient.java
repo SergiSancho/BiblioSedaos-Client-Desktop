@@ -31,7 +31,6 @@ import java.util.logging.Logger;
  * -Dapi.ssl.trustStorePassword=changeit
  *
  * Si no es passa trustStore, s'usarà l'SSLContext per defecte de la JVM
- * (p.ex. cacerts o el -Djavax.net.ssl.trustStore si el definíu).
  *
  * Assistència d'IA: fragment(s) de codi generat / proposat / refactoritzat per ChatGPT-5 i DeepSeek.
  * S'ha revisat i adaptat manualment per l'autor. Veure llegeixme.pdf per detalls.

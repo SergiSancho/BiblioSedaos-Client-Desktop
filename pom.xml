@@ -118,7 +118,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version> <!-- Versión estable más reciente -->
+                <version>3.1.2</version>
                 <configuration>
                     <!-- Ejecutar tests en classpath para evitar problemas con módulos -->
                     <useModulePath>false</useModulePath>
@@ -137,6 +137,17 @@
                     </argLine>
                     <systemPropertyVariables>
                         <tests.noDialog>true</tests.noDialog>
+
+                        <!-- Surefire pasa el truststore a la JVM de test -->
+                        <api.ssl.trustStore>${basedir}/certs/truststore.jks</api.ssl.trustStore>
+                        <api.ssl.trustStorePassword>changeit</api.ssl.trustStorePassword>
+
+                        <!-- Opcional: definir el trustStore global de JSSE -->
+                        <javax.net.ssl.trustStore>${basedir}/certs/truststore.jks</javax.net.ssl.trustStore>
+                        <javax.net.ssl.trustStorePassword>changeit</javax.net.ssl.trustStorePassword>
+
+                        <!-- (Opcional) activar debug JSSE durante tests -->
+                        <javax.net.debug>ssl,handshake</javax.net.debug>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
