@@ -132,6 +132,7 @@ public class MainApp extends Application {
      * @param args arguments de linia de comandes
      */
     public static void main(String[] args) {
+        AppConfig.loadSystemPropertiesFromFile();
         launch(args);
     }
 }

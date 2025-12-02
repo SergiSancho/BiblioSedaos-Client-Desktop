@@ -124,8 +124,11 @@ public class ApiClient {
      */
     private static HttpClient createHttpClient() {
         try {
-            String trustStorePath = System.getProperty("api.ssl.trustStore");
-            String trustStorePass = System.getProperty("api.ssl.trustStorePassword");
+            String trustStorePath = System.getProperty("api.ssl.trustStore",
+                    System.getProperty("javax.net.ssl.trustStore"));
+            String trustStorePass = System.getProperty("api.ssl.trustStorePassword",
+                    System.getProperty("javax.net.ssl.trustStorePassword"));
+
 
             SSLContext sslContext;
             if (trustStorePath != null && !trustStorePath.isBlank()) {

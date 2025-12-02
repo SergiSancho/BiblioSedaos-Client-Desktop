@@ -77,4 +77,57 @@ public class AppConfig {
 
         return useMock;
     }
+
+    /**
+     * Carrega propietats de configuració i, opcionalment, les estableix com a system properties
+     * útils per a la inicialització de l'aplicació (trustStore, javax.net.debug, api.base.url).
+     */
+    public static void loadSystemPropertiesFromFile() {
+        Path external = Path.of(CONFIG_FILE);
+        Properties props = new Properties();
+
+        if (Files.exists(external)) {
+            try (InputStream in = Files.newInputStream(external)) {
+                props.load(in);
+                LOGGER.log(Level.INFO, "[CONFIG] cargado app.properties externo: {0}", external.toAbsolutePath());
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "[CONFIG] no se pudo leer app.properties externo: {0}", e.getMessage());
+            }
+        } else {
+            try (InputStream in = AppConfig.class.getResourceAsStream("/app.properties")) {
+                if (in != null) {
+                    props.load(in);
+                    LOGGER.log(Level.INFO, "[CONFIG] cargado app.properties del classpath");
+                } else {
+                    LOGGER.log(Level.INFO, "[CONFIG] no se encontró app.properties en classpath ni en el working dir");
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "[CONFIG] error reading app.properties from classpath: {0}", e.getMessage());
+            }
+        }
+
+        String[] keys = new String[] {
+                "api.base.url",
+                "api.ssl.trustStore",
+                "api.ssl.trustStorePassword",
+                "javax.net.ssl.trustStore",
+                "javax.net.ssl.trustStorePassword",
+                "javax.net.debug"
+        };
+
+        for (String k : keys) {
+            String v = props.getProperty(k);
+            if (v != null && System.getProperty(k) == null) {
+                System.setProperty(k, v.trim());
+                LOGGER.log(Level.INFO, "[CONFIG] System property set: {0}={1}", new Object[]{k, v});
+            }
+        }
+
+        String passEnv = System.getenv("API_SSL_TRUSTSTORE_PASSWORD");
+        if (passEnv != null && System.getProperty("api.ssl.trustStorePassword") == null) {
+            System.setProperty("api.ssl.trustStorePassword", passEnv);
+            System.setProperty("javax.net.ssl.trustStorePassword", passEnv);
+            LOGGER.log(Level.INFO, "[CONFIG] Loaded truststore password from env API_SSL_TRUSTSTORE_PASSWORD");
+        }
+    }
 }
